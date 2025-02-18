@@ -49,13 +49,20 @@
           let row = doc.data()
 
           const html = `
-        <tr>
+        <tr data-id=${doc.id}>
           <td><img class="member-photo" src="${row['img']}" alt="멤버 사진"></td>
           <td>${row['name']}</td>
           <td>${row['reg_dt'].substring(0, 10)}</td>
         </tr>
         `
           $('#member-list').append(html)
+        })
+
+        const rows = document.querySelectorAll('#member-list > tr')
+        rows.forEach((el) => {
+          el.addEventListener('click', function (e) {
+            location.href = `/pages/admin/member/edit.html?id=${el.dataset.id}`
+          })
         })
       }
     })()

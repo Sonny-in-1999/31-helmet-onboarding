@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>멤버 수정</title>
+  <link href="../../../assets/styles/admin/admin.css" type="text/css" rel="stylesheet">
+  <link href="../../../assets/styles/admin/reset.css" type="text/css" rel="stylesheet">
+
+  <link href="../../../assets/js/dropdown-select/index.css" type="text/css" rel="stylesheet">
+  <script src="../../../assets/js/dropdown-select/index.js" defer></script>
+
+  <link href="../../../assets/js/text-field/index.css" type="text/css" rel="stylesheet">
+  <script src="../../../assets/js/text-field/index.js" defer></script>
+
+  <link href="../../../assets/js/image-upload/index.css" type="text/css" rel="stylesheet">
+  <script src="../../../assets/js/image-upload/index.js" defer></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Quill (editor) -->
+  <link rel="stylesheet" href="../../../assets/lib/quill/quill.snow.css" />
+  <script src="../../../assets/lib/quill/quill.min.js"></script>
+  <script src="../../../assets/lib/quill/image-resize.min.js"></script>
+  <!-- 제이쿼리 CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>멤버 수정</h1>
+    <div class="card content">
+      <div class="card__section">
+        <form class="post">
+          <div class="row">
+            <div>이름</div>
+            <div class="col">
+              <text-field required clearable placeholder="이름" native-name="name" id="name"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>이미지</div>
+            <div class="col">
+              <image-upload id="img"></image-upload>
+            </div>
+          </div>
+          <div class="row">
+            <div>MBTI</div>
+            <div class="col">
+              <dropdown-select placeholder="MBTI" clearable required id="mbti">
+                <template slot>
+                  <li data-value="ISTJ">ISTJ</li>
+                  <li data-value="ISFJ">ISFJ</li>
+                  <li data-value="INFJ">INFJ</li>
+                  <li data-value="INTJ">INTJ</li>
+                  <li data-value="ISTP">ISTP</li>
+                  <li data-value="ISFP">ISFP</li>
+                  <li data-value="INFP">INFP</li>
+                  <li data-value="INTP">INTP</li>
+                  <li data-value="ESTP">ESTP</li>
+                  <li data-value="ESFP">ESFP</li>
+                  <li data-value="ENFP">ENFP</li>
+                  <li data-value="ENTP">ENTP</li>
+                  <li data-value="ESTJ">ESTJ</li>
+                  <li data-value="ESFJ">ESFJ</li>
+                  <li data-value="ENFJ">ENFJ</li>
+                  <li data-value="ENTJ">ENTJ</li>
+                </template>
+              </dropdown-select>
+            </div>
+          </div>
+          <div class="row">
+            <div>블로그</div>
+            <div class="col">
+              <text-field required clearable placeholder="블로그" native-name="blog" id="blog"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>연락처</div>
+            <div class="col">
+              <text-field required clearable placeholder="연락처" native-name="contact" id="contact"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>이메일</div>
+            <div class="col">
+              <text-field required clearable placeholder="이메일" native-name="email" id="email"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>스킬</div>
+            <div class="col">
+              <text-field clearable placeholder="스킬 검색" id="skillSearch"></text-field>
+              <ul id="skillList"></ul>
+              <ul id="selectedSkillList"></ul>
+            </div>
+          </div>
+          <div class="row">
+            <div style="height: auto">자기소개</div>
+            <div class="col">
+              <div id="editor"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <button class="cancel-button">취소</button>
+            <button class="register-button">등록</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db, doc, getDoc, updateDoc } from '../../../assets/js/firebase-config.js'
+
+    // 전역 변수
+    let quill
+    let checkUnload = true
+    let skills = []
+    let selectedSkills = []
+
+    // DOM 요소 캐싱
+    const skillSearch = document.getElementById('skillSearch')
+    const skillList = document.getElementById('skillList')
+    const selectedSkillList = document.getElementById('selectedSkillList')
+
+    /* 초기화 함수들 */
+    function initQuill() {
+      const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ header: 1 }, { header: 2 }],
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+        [{ script: 'sub' }, { script: 'super' }],
+        [{ indent: '-1' }, { indent: '+1' }],
+        [{ direction: 'rtl' }],
+        [{ size: ['small', false, 'large', 'huge'] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ color: [] }, { background: [] }],
+        [{ font: [] }],
+        [{ align: [] }],
+        ['clean'],
+      ]
+      
+      // quill 인스턴스에 getHtml 메서드 추가
+      Quill.prototype.getHtml = function () {
+        return this.container.querySelector('.ql-editor').innerHTML
+      }
+      quill = new Quill('#editor', {
+        modules: {
+          toolbar: toolbarOptions,
+          imageResize: { displaySize: true }
+        },
+        theme: 'snow'
+      })
+    }
+
+    function initContactInput() {
+      $('#contact').on('input', function () {
+        let input = $(this).val()
+        let digits = input.replace(/\D/g, '')
+        let formatted = ''
+        if (digits.startsWith('02')) {
+          if (digits.length < 3) formatted = digits
+          else if (digits.length < 6) formatted = digits.substr(0, 2) + '-' + digits.substr(2)
+          else if (digits.length < 9) formatted = digits.substr(0, 2) + '-' + digits.substr(2, 3) + '-' + digits.substr(5)
+          else formatted = digits.substr(0, 2) + '-' + digits.substr(2, 4) + '-' + digits.substr(6, 4)
+        } else {
+          if (digits.length < 4) formatted = digits
+          else if (digits.length < 7) formatted = digits.substr(0, 3) + '-' + digits.substr(3)
+          else if (digits.length < 11) formatted = digits.substr(0, 3) + '-' + digits.substr(3, 3) + '-' + digits.substr(6)
+          else formatted = digits.substr(0, 3) + '-' + digits.substr(3, 4) + '-' + digits.substr(7, 4)
+        }
+        $(this).val(formatted)
+      })
+    }
+
+    function initSkillSearch() {
+      // 스킬 목록 로드
+      fetch('../../../assets/json/language.json')
+        .then(response => response.json())
+        .then(data => {
+          skills = data
+          updateSkillList()
+        })
+        .catch(error => console.error('Error loading skills:', error))
+      skillSearch.addEventListener('change', updateSkillList)
+    }
+
+    /* 스킬 관련 함수 */
+    function updateSkillList() {
+      const searchText = skillSearch.value.toLowerCase().trim()
+      skillList.innerHTML = ''
+      if (!searchText) return
+      skills.forEach(skill => {
+        if (skill.name.toLowerCase().includes(searchText)) {
+          const li = document.createElement('li')
+          li.textContent = skill.name
+          li.style.cursor = 'pointer'
+          li.addEventListener('click', () => addSkill(skill.name))
+          skillList.appendChild(li)
+        }
+      })
+    }
+
+    function updateSelectedSkillList() {
+      selectedSkillList.innerHTML = ''
+      selectedSkills.forEach((skill, index) => {
+        const li = document.createElement('li')
+        li.classList.add('chip')
+        const span = document.createElement('span')
+        span.textContent = skill
+        li.appendChild(span)
+        const removeIcon = document.createElement('i')
+        removeIcon.classList.add('material-icons', 'remove-icon')
+        removeIcon.textContent = 'close'
+        removeIcon.addEventListener('click', () => removeSkill(index))
+        li.appendChild(removeIcon)
+        selectedSkillList.appendChild(li)
+      })
+    }
+
+    function addSkill(skillName) {
+      if (!selectedSkills.includes(skillName)) {
+        selectedSkills.push(skillName)
+        updateSelectedSkillList()
+      }
+    }
+
+    function removeSkill(index) {
+      selectedSkills.splice(index, 1)
+      updateSelectedSkillList()
+    }
+
+    /* 데이터 로드 및 설정 */
+    async function loadDetail() {
+      const params = new URLSearchParams(window.location.search)
+      const id = params.get('id')
+      if (!id) {
+        alert("문서 id가 제공되지 않았습니다.")
+        location.href = 'list.html'
+        return
+      }
+      const docRef = doc(db, "member", id)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        setData(docSnap.data())
+      } else {
+        alert("해당 문서가 존재하지 않습니다.")
+        location.href = 'list.html'
+      }
+    }
+
+    function setData(data) {
+      console.log("문서 데이터:", data)
+      $('#name').val(data['name'])
+      $('.upload').addClass('hidden')
+      $('.preview').removeClass('hidden')
+      $('.preview').append(`<img src="${data['img']}" alt="미리보기" class="preview-image">`)
+      $('#mbti').val(data['mbti'])
+      $('#blog').val(data['blog'])
+      $('#contact').val(data['contact'])
+      $('#email').val(data['email'])
+      data['skillList'].forEach(skill => addSkill(skill))
+      quill.root.innerHTML = data['introduce']
+    }
+
+    /* 업데이트 로직 */
+    async function updateMember() {
+      // 유효성 검사
+      document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate())
+      const name = $('#name').val()
+      if (!name || name.trim() === '') {
+        alert('이름을 입력해주세요.')
+        return
+      }
+
+      const img = $('.preview-image').attr('src')
+      if (!img) {
+        alert('이미지를 업로드 해주세요.')
+        return
+      }
+
+      const mbtiVal = $('#mbti').val()
+      const mbti = mbtiVal.value ? mbtiVal.value : mbtiVal
+      if (!mbti || mbti.trim() === '') {
+        alert('MBTI를 입력해주세요.')
+        return
+      }
+
+      const blog = $('#blog').val()
+      if (!blog || blog.trim() === '') {
+        alert('블로그 주소를 입력해주세요.')
+        return
+      }
+
+      const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
+      if (!blogRegex.test(blog)) {
+        alert('올바르지 않은 블로그 주소입니다.')
+        $('#blog').children('label').first().addClass('text-field__error')
+        return
+      }
+
+      const contact = $('#contact').val()
+      if (!contact || contact.trim() === '') {
+        alert('연락처를 입력해주세요.')
+        return
+      }
+
+      const email = $('#email').val()
+      if (!email || email.trim() === '') {
+        alert('이메일을 입력해주세요.')
+        return
+      }
+
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (!emailRegex.test(email)) {
+        alert('올바르지 않은 이메일 주소입니다.')
+        $('#email').children('label').first().addClass('text-field__error')
+        return
+      }
+
+      const contents = quill.getHtml()
+      const tempContents = document.createElement('div')
+      tempContents.innerHTML = contents
+      if (!tempContents.innerText.trim()) {
+        alert('상세 내용을 입력해주세요.')
+        return
+      }
+
+      const updateData = {
+        name,
+        img,
+        mbti,
+        blog,
+        contact,
+        email,
+        skillList: selectedSkills,
+        introduce: contents
+      }
+
+      try {
+        const params = new URLSearchParams(window.location.search)
+        const id = params.get('id')
+        const docRef = doc(db, "member", id)
+        await updateDoc(docRef, updateData)
+        checkUnload = false
+        alert("수정에 성공하였습니다.")
+        location.href = "list.html"
+      } catch (error) {
+        alert("수정 실패:", error)
+      }
+    }
+
+    /* 이벤트 바인딩 및 초기화 */
+    $(document).ready(() => {
+      initQuill()
+      initContactInput()
+      initSkillSearch()
+      loadDetail()
+
+      $('.cancel-button').click(e => {
+        e.preventDefault()
+        location.href = 'list.html'
+      })
+      $('.register-button').click(async e => {
+        e.preventDefault()
+        await updateMember()
+      })
+      $(window).on("beforeunload", () => {
+        if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
+      })
+    })
+  </script>
+</body>
+</html>
