@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <title>멤버 등록</title>
@@ -23,6 +24,7 @@
   <!-- 제이쿼리 CDN -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>멤버 등록</h1>
@@ -107,6 +109,10 @@
     </div>
   </div>
 
+  <div class="loading-container" style="display: none;">
+    <div class="loading-spinner"></div>
+  </div>
+
   <!-- Firebase 및 공통 스크립트 -->
   <script type="module">
     import { app, db, collection, addDoc, ref, storage, uploadBytes, getDownloadURL } from '../../../assets/js/firebase-config.js'
@@ -180,9 +186,18 @@
       }
 
       // 이미지 업로드 처리
-      const storageRef = ref(storage, `memberImages/${img.name}`)
-      await uploadBytes(storageRef, img)
-      let imgUrl = await getDownloadURL(storageRef)
+      $('.loading-container').show()
+
+
+      let imgUrl
+      try {
+        const storageRef = ref(storage, `memberImages/${img.name}`)
+        await uploadBytes(storageRef, img)
+        imgUrl = await getDownloadURL(storageRef)
+      } catch (error) {
+        alert("이미지 업로드 실패: " + error)
+        $('.loading-container').hide()
+      }
 
       const data = {
         name,
@@ -204,6 +219,7 @@
       } catch (error) {
         alert("등록 실패: " + error)
       }
+      $('.loading-container').hide()
     }
 
     // 이벤트 바인딩
@@ -258,4 +274,5 @@
     }
   </script>
 </body>
+
 </html>

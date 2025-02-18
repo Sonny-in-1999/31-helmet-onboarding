@@ -108,6 +108,9 @@
       </div>
     </div>
   </div>
+  <div class="loading-container" style="display: none;">
+    <div class="loading-spinner"></div>
+  </div>
 
   <!-- Firebase 및 공통 스크립트 -->
   <script type="module">
@@ -222,12 +225,18 @@
         return
       }
 
+      $('.loading-container').show()
       let imgUrl
       // 이미지 변경 여부 처리: 이미지 파일에 url 속성이 없으면 새 업로드, 있으면 기존 이미지 URL 사용
       if (document.querySelector('#img').state.value.url === undefined) {
-        const storageRef = ref(storage, `memberImages/${img.name}`)
+        try {
+          const storageRef = ref(storage, `memberImages/${img.name}`)
         await uploadBytes(storageRef, img)
         imgUrl = await getDownloadURL(storageRef)
+        } catch (error) {
+          alert("이미지 업로드 실패: " + error)
+          $('.loading-container').hide()
+        }
       } else {
         imgUrl = $('.preview-image').attr('src')
       }
@@ -254,6 +263,7 @@
       } catch (error) {
         alert("수정 실패: " + error)
       }
+      $('.loading-container').hide()
     }
 
     // 이벤트 바인딩 및 초기화
@@ -310,4 +320,5 @@
     }
   </script>
 </body>
+
 </html>
