@@ -5,20 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/styles/guestBook.css" type="text/css" rel="stylesheet">
-    <title>방명록 페이지</title>
+    <title>방명록</title>
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- firebase 설정-->
-    <script type="module">
-        import { app, db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '../assets/js/firebase-config.js';
-    </script>
+    <script type="module" src="../assets/js/guestBook.js"></script>
 </head>
 
 <body>
     <div id="header"></div>
     <div class="main-content">
-        방명록 페이지
+        <h2>방명록</h2>
+        <div class="guestbook-list">
+            <ul id="guestbook-messages"></ul>
+        </div>
+        <div class="guestbook-form">
+            <input type="text" id="nickname" placeholder="닉네임을 입력해주세요." required>
+            <textarea id="guestbook-message" placeholder="내용을 입력해주세요."></textarea>
+            <button id="guestbook-submit">작성</button>
+        </div>
     </div>
     <div id="footer"></div>
     <script>
