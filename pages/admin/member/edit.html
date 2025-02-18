@@ -100,9 +100,14 @@
               <div id="editor"></div>
             </div>
           </div>
-          <div class="text-right">
-            <button class="cancel-button">취소</button>
-            <button class="register-button">수정</button>
+          <div style="display: flex; justify-content: space-between;  align-items: center;">
+            <div>
+              <button class="delete-button">삭제</button>
+            </div>
+            <div>
+              <button class="cancel-button">취소</button>
+              <button class="register-button">수정</button>
+            </div>
           </div>
         </form>
       </div>
@@ -114,7 +119,7 @@
 
   <!-- Firebase 및 공통 스크립트 -->
   <script type="module">
-    import { db, doc, getDoc, updateDoc, ref, storage, uploadBytes, getDownloadURL } from '../../../assets/js/firebase-config.js'
+    import { db, doc, getDoc, updateDoc, ref, storage, uploadBytes, getDownloadURL, deleteDoc } from '../../../assets/js/firebase-config.js'
     import { initContactInput, initSkillSearch, getDate, selectedSkills } from '../../../assets/js/admin/common.js'
     let quill
     let checkUnload = true
@@ -231,8 +236,8 @@
       if (document.querySelector('#img').state.value.url === undefined) {
         try {
           const storageRef = ref(storage, `memberImages/${img.name}`)
-        await uploadBytes(storageRef, img)
-        imgUrl = await getDownloadURL(storageRef)
+          await uploadBytes(storageRef, img)
+          imgUrl = await getDownloadURL(storageRef)
         } catch (error) {
           alert("이미지 업로드 실패: " + error)
           $('.loading-container').hide()
@@ -266,22 +271,46 @@
       $('.loading-container').hide()
     }
 
+    async function deleteMember() {
+      if (confirm('멤버를 삭제하시겠습니까?')) {
+        $('.loading-container').show()
+        try {
+          const params = new URLSearchParams(window.location.search)
+          const id = params.get('id')
+          const docRef = doc(db, "member", id)
+          await deleteDoc(docRef)
+          checkUnload = false
+          alert("삭제에 성공하였습니다.")
+          location.href = "list.html"
+        } catch (error) {
+          alert("삭제 실패: " + error)
+        }
+        $('.loading-container').hide()
+      }
+    }
+
     // 이벤트 바인딩 및 초기화
     $(document).ready(() => {
       initQuill()
       initContactInput()
       initSkillSearch()
-
       loadDetail()
 
       $('.cancel-button').click(e => {
         e.preventDefault()
         location.href = 'list.html'
       })
+
       $('.register-button').click(async e => {
         e.preventDefault()
         await updateMember()
       })
+
+      $('.delete-button').click(async e => {
+        e.preventDefault()
+        await deleteMember()
+      })
+
       $(window).on("beforeunload", () => {
         if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
       })

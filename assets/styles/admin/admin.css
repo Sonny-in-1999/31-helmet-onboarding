@@ -73,7 +73,7 @@ tr:hover {
   /* 우측 정렬 */
 }
 
-.register-button, .cancel-button {
+.register-button, .cancel-button, .delete-button{
   display: inline-block;
   background: #E8344E;
   color: #fff;
@@ -91,11 +91,11 @@ tr:hover {
   cursor: pointer;
 }
 
-.cancel-button {
+.cancel-button, .delete-button {
   background: #949494;
 }
 
-.cancel-button:hover {
+.cancel-button:hover, .delete-button:hover {
   background: #747474;
   cursor: pointer;
 }
