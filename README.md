@@ -11,6 +11,7 @@
 - #### HTML
 - #### CSS
 - #### JavaScript
-- #### Supabase/Firebase(고려중)
+- #### Firebase Database
+- #### Firebase Storage
 - #### Git/GitHub
 ### [팀노션](https://www.notion.so/teamsparta/31-19d2dc3ef51480d89c1df24a91ae8e55)
