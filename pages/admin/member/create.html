@@ -23,7 +23,6 @@
   <!-- 제이쿼리 CDN -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-
 <body>
   <div class="container">
     <h1>멤버 등록</h1>
@@ -108,11 +107,14 @@
     </div>
   </div>
 
-  <!-- 등록 로직 (Firebase 관련) -->
+  <!-- Firebase 및 공통 스크립트 -->
   <script type="module">
     import { app, db, collection, addDoc, ref, storage, uploadBytes, getDownloadURL } from '../../../assets/js/firebase-config.js'
+    import { initContactInput, initSkillSearch, getDate, selectedSkills } from '../../../assets/js/admin/common.js'
+    let quill
+    let checkUnload = true
 
-    // 등록 시 데이터 유효성 검사 및 Firebase 저장 처리
+    // 등록 로직
     async function registerMember() {
       // 모든 입력 컴포넌트에 대해 validate 호출
       document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate())
@@ -123,13 +125,14 @@
         return
       }
 
+      // 이미지 업로드 컴포넌트의 경우, state.value에 파일 객체가 있어야 합니다.
       const img = document.querySelector('#img').state.value
-      if (img == undefined) {
+      if (!img) {
         alert('이미지를 등록해주세요.')
         return
       }
 
-      // mbti 컴포넌트의 경우 value 혹은 그 자체를 반환할 수 있으므로 유연하게 처리
+      // MBTI 컴포넌트의 값 처리
       const mbtiVal = $('#mbti').val()
       const mbti = mbtiVal.value ? mbtiVal.value : mbtiVal
       if (!mbti || mbti.trim() === '') {
@@ -142,7 +145,6 @@
         alert('블로그 주소를 입력해주세요.')
         return
       }
-
       const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
       if (!blogRegex.test(blog)) {
         alert('올바르지 않은 블로그 주소입니다.')
@@ -168,6 +170,7 @@
         return
       }
 
+      // 에디터 내용
       const contents = quill.getHtml()
       const tempContents = document.createElement('div')
       tempContents.innerHTML = contents
@@ -176,9 +179,10 @@
         return
       }
 
-      const storageRef = ref(storage, `memberImages /${img.name}`);
-      await uploadBytes(storageRef, img);
-      let imgUrl = await getDownloadURL(storageRef);
+      // 이미지 업로드 처리
+      const storageRef = ref(storage, `memberImages/${img.name}`)
+      await uploadBytes(storageRef, img)
+      let imgUrl = await getDownloadURL(storageRef)
 
       const data = {
         name,
@@ -202,8 +206,12 @@
       }
     }
 
-    // 이벤트 바인딩 for 등록, 취소 버튼
+    // 이벤트 바인딩
     $(document).ready(() => {
+      initQuill()
+      initContactInput()
+      initSkillSearch()
+
       $('.cancel-button').click(e => {
         e.preventDefault()
         location.href = 'list.html'
@@ -212,22 +220,11 @@
         e.preventDefault()
         await registerMember()
       })
-    })
-  </script>
-
-  <!-- 기본 세팅 및 스킬/연락처/Quill 등 초기화 -->
-  <script>
-    let quill
-    let checkUnload = true
-    let skills = []
-    let selectedSkills = []
-
-    // beforeunload 경고
-    $(window).on("beforeunload", () => {
-      if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
+      $(window).on("beforeunload", () => {
+        if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
+      })
     })
 
-    // Quill 초기화 함수
     function initQuill() {
       const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
@@ -243,12 +240,14 @@
         [{ color: [] }, { background: [] }],
         [{ font: [] }],
         [{ align: [] }],
-        ['clean'],
+        ['clean']
       ]
 
+      // Quill 인스턴스에 getHtml 메서드 추가
       Quill.prototype.getHtml = function () {
         return this.container.querySelector('.ql-editor').innerHTML
       }
+
       quill = new Quill('#editor', {
         modules: {
           toolbar: toolbarOptions,
@@ -257,112 +256,6 @@
         theme: 'snow'
       })
     }
-
-    // 연락처 입력 포맷 초기화
-    function initContactInput() {
-      $('#contact').on('input', function () {
-        let input = $(this).val()
-        let digits = input.replace(/\D/g, '')
-        let formatted = ''
-        if (digits.startsWith('02')) {
-          if (digits.length < 3) formatted = digits
-          else if (digits.length < 6) formatted = digits.substr(0, 2) + '-' + digits.substr(2)
-          else if (digits.length < 9) formatted = digits.substr(0, 2) + '-' + digits.substr(2, 3) + '-' + digits.substr(5)
-          else formatted = digits.substr(0, 2) + '-' + digits.substr(2, 4) + '-' + digits.substr(6, 4)
-        } else {
-          if (digits.length < 4) formatted = digits
-          else if (digits.length < 7) formatted = digits.substr(0, 3) + '-' + digits.substr(3)
-          else if (digits.length < 11) formatted = digits.substr(0, 3) + '-' + digits.substr(3, 3) + '-' + digits.substr(6)
-          else formatted = digits.substr(0, 3) + '-' + digits.substr(3, 4) + '-' + digits.substr(7, 4)
-        }
-        $(this).val(formatted)
-      })
-    }
-
-    // 스킬 검색 및 선택 초기화
-    function initSkillSearch() {
-      const skillSearch = document.getElementById('skillSearch')
-      const skillListElem = document.getElementById('skillList')
-      const selectedSkillListElem = document.getElementById('selectedSkillList')
-
-      // 스킬 목록 불러오기
-      fetch('../../../assets/json/language.json')
-        .then(response => response.json())
-        .then(data => {
-          skills = data
-          updateSkillList()
-        })
-        .catch(error => console.error('Error loading skills:', error))
-
-      // 검색어 변경 시 업데이트
-      skillSearch.addEventListener('change', updateSkillList)
-
-      // 검색 결과 업데이트 함수
-      function updateSkillList() {
-        const searchText = skillSearch.value.toLowerCase().trim()
-        skillListElem.innerHTML = ''
-        if (!searchText) return
-        skills.forEach(skill => {
-          if (skill.name.toLowerCase().includes(searchText)) {
-            const li = document.createElement('li')
-            li.textContent = skill.name
-            li.style.cursor = 'pointer'
-            li.addEventListener('click', () => addSkill(skill.name))
-            skillListElem.appendChild(li)
-          }
-        })
-      }
-
-      // 선택된 스킬 업데이트 함수
-      function updateSelectedSkillList() {
-        selectedSkillListElem.innerHTML = ''
-        selectedSkills.forEach((skill, index) => {
-          const li = document.createElement('li')
-          li.classList.add('chip')
-          const span = document.createElement('span')
-          span.textContent = skill
-          li.appendChild(span)
-          const removeIcon = document.createElement('i')
-          removeIcon.classList.add('material-icons', 'remove-icon')
-          removeIcon.textContent = 'close'
-          removeIcon.addEventListener('click', () => removeSkill(index))
-          li.appendChild(removeIcon)
-          selectedSkillListElem.appendChild(li)
-        })
-      }
-
-      // 스킬 추가/제거 함수 (전역 selectedSkills 배열 사용)
-      window.addSkill = function(skillName) {
-        if (!selectedSkills.includes(skillName)) {
-          selectedSkills.push(skillName)
-          updateSelectedSkillList()
-        }
-      }
-
-      window.removeSkill = function(index) {
-        selectedSkills.splice(index, 1)
-        updateSelectedSkillList()
-      }
-    }
-
-    // 날짜 반환 함수 (yyyy-MM-dd HH:mm:ss)
-    function getDate() {
-      const date = new Date()
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-    }
-
-    // 초기화 함수 호출
-    $(document).ready(() => {
-      initQuill()
-      initContactInput()
-      initSkillSearch()
-    })
   </script>
 </body>
 </html>

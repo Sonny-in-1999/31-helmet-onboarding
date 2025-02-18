@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <title>멤버 수정</title>
@@ -101,138 +102,21 @@
           </div>
           <div class="text-right">
             <button class="cancel-button">취소</button>
-            <button class="register-button">수정 </button>
+            <button class="register-button">수정</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
+  <!-- Firebase 및 공통 스크립트 -->
   <script type="module">
-    import { db, doc, getDoc, updateDoc, ref, storage, uploadBytes, getDownloadURL  } from '../../../assets/js/firebase-config.js'
-
-    // 전역 변수
+    import { db, doc, getDoc, updateDoc, ref, storage, uploadBytes, getDownloadURL } from '../../../assets/js/firebase-config.js'
+    import { initContactInput, initSkillSearch, getDate, selectedSkills } from '../../../assets/js/admin/common.js'
     let quill
     let checkUnload = true
-    let skills = []
-    let selectedSkills = []
-    let imgFiles = []
 
-    // DOM 요소 캐싱
-    const skillSearch = document.getElementById('skillSearch')
-    const skillList = document.getElementById('skillList')
-    const selectedSkillList = document.getElementById('selectedSkillList')
-
-    /* 초기화 함수들 */
-    function initQuill() {
-      const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote', 'code-block'],
-        ['link', 'image', 'video', 'formula'],
-        [{ header: 1 }, { header: 2 }],
-        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-        [{ script: 'sub' }, { script: 'super' }],
-        [{ indent: '-1' }, { indent: '+1' }],
-        [{ direction: 'rtl' }],
-        [{ size: ['small', false, 'large', 'huge'] }],
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ color: [] }, { background: [] }],
-        [{ font: [] }],
-        [{ align: [] }],
-        ['clean'],
-      ]
-      
-      // quill 인스턴스에 getHtml 메서드 추가
-      Quill.prototype.getHtml = function () {
-        return this.container.querySelector('.ql-editor').innerHTML
-      }
-      quill = new Quill('#editor', {
-        modules: {
-          toolbar: toolbarOptions,
-          imageResize: { displaySize: true }
-        },
-        theme: 'snow'
-      })
-    }
-
-    function initContactInput() {
-      $('#contact').on('input', function () {
-        let input = $(this).val()
-        let digits = input.replace(/\D/g, '')
-        let formatted = ''
-        if (digits.startsWith('02')) {
-          if (digits.length < 3) formatted = digits
-          else if (digits.length < 6) formatted = digits.substr(0, 2) + '-' + digits.substr(2)
-          else if (digits.length < 9) formatted = digits.substr(0, 2) + '-' + digits.substr(2, 3) + '-' + digits.substr(5)
-          else formatted = digits.substr(0, 2) + '-' + digits.substr(2, 4) + '-' + digits.substr(6, 4)
-        } else {
-          if (digits.length < 4) formatted = digits
-          else if (digits.length < 7) formatted = digits.substr(0, 3) + '-' + digits.substr(3)
-          else if (digits.length < 11) formatted = digits.substr(0, 3) + '-' + digits.substr(3, 3) + '-' + digits.substr(6)
-          else formatted = digits.substr(0, 3) + '-' + digits.substr(3, 4) + '-' + digits.substr(7, 4)
-        }
-        $(this).val(formatted)
-      })
-    }
-
-    function initSkillSearch() {
-      // 스킬 목록 로드
-      fetch('../../../assets/json/language.json')
-        .then(response => response.json())
-        .then(data => {
-          skills = data
-          updateSkillList()
-        })
-        .catch(error => console.error('Error loading skills:', error))
-      skillSearch.addEventListener('change', updateSkillList)
-    }
-
-    /* 스킬 관련 함수 */
-    function updateSkillList() {
-      const searchText = skillSearch.value.toLowerCase().trim()
-      skillList.innerHTML = ''
-      if (!searchText) return
-      skills.forEach(skill => {
-        if (skill.name.toLowerCase().includes(searchText)) {
-          const li = document.createElement('li')
-          li.textContent = skill.name
-          li.style.cursor = 'pointer'
-          li.addEventListener('click', () => addSkill(skill.name))
-          skillList.appendChild(li)
-        }
-      })
-    }
-
-    function updateSelectedSkillList() {
-      selectedSkillList.innerHTML = ''
-      selectedSkills.forEach((skill, index) => {
-        const li = document.createElement('li')
-        li.classList.add('chip')
-        const span = document.createElement('span')
-        span.textContent = skill
-        li.appendChild(span)
-        const removeIcon = document.createElement('i')
-        removeIcon.classList.add('material-icons', 'remove-icon')
-        removeIcon.textContent = 'close'
-        removeIcon.addEventListener('click', () => removeSkill(index))
-        li.appendChild(removeIcon)
-        selectedSkillList.appendChild(li)
-      })
-    }
-
-    function addSkill(skillName) {
-      if (!selectedSkills.includes(skillName)) {
-        selectedSkills.push(skillName)
-        updateSelectedSkillList()
-      }
-    }
-
-    function removeSkill(index) {
-      selectedSkills.splice(index, 1)
-      updateSelectedSkillList()
-    }
-
-    /* 데이터 로드 및 설정 */
+    // 수정 데이터 로드 및 설정
     async function loadDetail() {
       const params = new URLSearchParams(window.location.search)
       const id = params.get('id')
@@ -252,34 +136,35 @@
     }
 
     function setData(data) {
-      console.log("문서 데이터:", data)
       $('#name').val(data['name'])
 
+      // 이미지 처리
+      // 임시로 imgFiles 배열에 기존 이미지 URL 저장 후 DataTransfer 객체 생성하여 파일을 할당하는 예시입니다.
+      const imgFiles = []
       imgFiles.push(data['img'])
-      const imgFile = imgFiles.reduce((acc, cur) => {
-        const file = new File([''],  'temp.file')
-        Object.defineProperty(file, 'size', { value: '0' })
+      const fileList = imgFiles.reduce((acc, cur) => {
+        const file = new File([''], 'temp.file')
+        Object.defineProperty(file, 'size', { value: 0 })
         file.url = cur
         acc.items.add(file)
         return acc
       }, new DataTransfer()).files
-
-      if(imgFile.length != 0) {
-        document.querySelector('#img').state.value = imgFile[0]
+      if (fileList.length != 0) {
+        document.querySelector('#img').state.value = fileList[0]
       }
 
       $('#mbti').val(data['mbti'])
       $('#blog').val(data['blog'])
       $('#contact').val(data['contact'])
       $('#email').val(data['email'])
-      data['skillList'].forEach(skill => addSkill(skill))
+      data['skillList'].forEach(skill => window.addSkill(skill))
       quill.root.innerHTML = data['introduce']
     }
 
-    /* 업데이트 로직 */
+    // 수정 처리 함수
     async function updateMember() {
-      // 유효성 검사
       document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate())
+
       const name = $('#name').val()
       if (!name || name.trim() === '') {
         alert('이름을 입력해주세요.')
@@ -287,7 +172,7 @@
       }
 
       const img = document.querySelector('#img').state.value
-      if (img == undefined) {
+      if (!img) {
         alert('이미지를 등록해주세요.')
         return
       }
@@ -304,7 +189,6 @@
         alert('블로그 주소를 입력해주세요.')
         return
       }
-
       const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
       if (!blogRegex.test(blog)) {
         alert('올바르지 않은 블로그 주소입니다.')
@@ -323,7 +207,6 @@
         alert('이메일을 입력해주세요.')
         return
       }
-
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
       if (!emailRegex.test(email)) {
         alert('올바르지 않은 이메일 주소입니다.')
@@ -339,15 +222,15 @@
         return
       }
 
-      
       let imgUrl
-      if (document.querySelector('#img').state.value.url == undefined) {
-        const storageRef = ref(storage, `memberImages /${img.name}`)
-        await uploadBytes(storageRef, img);
+      // 이미지 변경 여부 처리: 이미지 파일에 url 속성이 없으면 새 업로드, 있으면 기존 이미지 URL 사용
+      if (document.querySelector('#img').state.value.url === undefined) {
+        const storageRef = ref(storage, `memberImages/${img.name}`)
+        await uploadBytes(storageRef, img)
         imgUrl = await getDownloadURL(storageRef)
       } else {
         imgUrl = $('.preview-image').attr('src')
-      } 
+      }
 
       const updateData = {
         name,
@@ -359,7 +242,7 @@
         skillList: selectedSkills,
         introduce: contents
       }
- 
+
       try {
         const params = new URLSearchParams(window.location.search)
         const id = params.get('id')
@@ -369,15 +252,16 @@
         alert("수정에 성공하였습니다.")
         location.href = "list.html"
       } catch (error) {
-        alert("수정 실패:", error)
+        alert("수정 실패: " + error)
       }
     }
 
-    /* 이벤트 바인딩 및 초기화 */
+    // 이벤트 바인딩 및 초기화
     $(document).ready(() => {
       initQuill()
       initContactInput()
       initSkillSearch()
+
       loadDetail()
 
       $('.cancel-button').click(e => {
@@ -392,6 +276,38 @@
         if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
       })
     })
+
+    function initQuill() {
+      const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ header: 1 }, { header: 2 }],
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+        [{ script: 'sub' }, { script: 'super' }],
+        [{ indent: '-1' }, { indent: '+1' }],
+        [{ direction: 'rtl' }],
+        [{ size: ['small', false, 'large', 'huge'] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ color: [] }, { background: [] }],
+        [{ font: [] }],
+        [{ align: [] }],
+        ['clean']
+      ]
+
+      // Quill 인스턴스에 getHtml 메서드 추가
+      Quill.prototype.getHtml = function () {
+        return this.container.querySelector('.ql-editor').innerHTML
+      }
+
+      quill = new Quill('#editor', {
+        modules: {
+          toolbar: toolbarOptions,
+          imageResize: { displaySize: true }
+        },
+        theme: 'snow'
+      })
+    }
   </script>
 </body>
 </html>
