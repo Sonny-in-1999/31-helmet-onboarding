@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+* {
+    font-family: "Gowun Dodum", serif;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -33,6 +39,30 @@ body {
     margin-bottom: 20px;
 }
 
+.guestbook-item {
+    display: flex;
+    align-items: center;
+    /* 세로 정렬 */
+    gap: 10px;
+    /* 이미지와 닉네임 사이 간격 */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-image {
+    width: 40px;
+    /* 크기 조절 */
+    height: 40px;
+    border-radius: 50%;
+    /* 원형 프로필 */
+    object-fit: cover;
+}
+
+.guestbook-content {
+    flex: 1;
+    /* 닉네임과 메시지가 남은 공간을 차지하도록 설정 */
+}
+
 .guestbook-list ul {
     list-style: none;
     padding: 0;
@@ -47,7 +77,9 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
+    border: 1px solid black;
+    padding: 20px;
 }
 
 .guestbook-form input,
@@ -59,14 +91,22 @@ body {
 }
 
 .guestbook-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+    width: 20%;
+    padding: 5px;
+    background-color: #ddd;
+    color: black;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
+    margin-left : auto;
+    
 }
 
 .guestbook-form button:hover {
-    background-color: #0056b3;
+   background-color: grey;
 }
+
+#nickname {
+    width: 50%
+}
+

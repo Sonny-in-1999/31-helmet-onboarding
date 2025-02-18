@@ -1,45 +1,50 @@
 class ImageUpload extends HTMLElement {
   state = new Proxy(
-    {
-      value: null,
-      max: 1000 * 1000 * 10,
-    },
-    {
-      get: (target, props) => target[props],
-      set: ((target, props, value) => {
-        target[props] = value
+      {
+        value: null,
+        max: 1024 * 1024 * 10,
+      },
+      {
+        get: (target, props) => target[props],
+        set: ((target, props, value) => {
+          // 이전 파일 저장
+          const prevFile = target.value
 
-        if (props === 'value') {
-          this.renderPreview(value)
-        }
+          target[props] = value
 
-        if (props === 'max') {
-          this.render()
-        }
+          if (props === 'value') {
+            this.updatePreview(value) // state.value가 설정될 때 preview를 업데이트
+          }
 
-        return true
-      }).bind(this),
-    },
+          if (props === 'max') {
+            this.render()
+          }
+
+          return true
+        }).bind(this),
+      },
   )
 
   constructor() {
     super()
   }
+
   static get observedAttributes() {
     return ['max']
   }
+
   connectedCallback() {
     this.render()
   }
+
   attributeChangedCallback(name, oldValue, newValue) {
-    switch (name) {
-      case 'max': {
-        this.state[name] = Number(newValue)
-        break
-      }
+    if (name === 'max') {
+      this.state[name] = Number(newValue)
     }
   }
+
   disconnectedCallback() {}
+
   render() {
     this.innerHTML = ''
     this.container = document.createElement('label')
@@ -84,53 +89,50 @@ class ImageUpload extends HTMLElement {
 
     const units = ['B', 'KB', 'MB', 'GB', 'TB']
 
-    const i = Math.floor(Math.log(bytes) / Math.log(1000))
-    const size = bytes / Math.pow(1000, i)
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    const size = bytes / Math.pow(1024, i)
 
     return `${Number(size.toFixed(2))}${units[i]}`
   }
 
   handleFileUpload(event) {
     const file = event.target.files[0]
-
-    this.renderPreview(file)
+    this.state.value = file // state.value에 파일 설정, 프록시의 set 트랩이 호출됨
   }
-  renderPreview(file) {
+
+  updatePreview(file) {
     if (file) {
       if (file.size > this.state.max) {
         alert(`파일이 너무 큽니다. ${this.convertSize(this.state.max)} 이하의 파일을 업로드 해주세요.`)
         return
       }
-      if (!file.type.startsWith('image/')) {
-        alert('이미지 형식의 파일이 아닙니다. 확장자를 확인하여 업로드해주세요.')
-        return
-      }
+
+      this.querySelector('.upload').classList.add('hidden')
+      const preview = this.querySelector('.preview')
+      preview.classList.remove('hidden')
+      preview.innerHTML = ''
+      const img = document.createElement('img')
+      img.alt = '미리보기'
+      img.classList.add('preview-image')
 
       const reader = new FileReader()
-      const preview = this.querySelector('.preview')
-      const img = document.createElement('img')
-      reader.onload = (e) => {
-        this.querySelector('.upload').classList.add('hidden')
-        preview.classList.remove('hidden')
-        preview.innerHTML = ''
 
-        img.src = e.target.result
-        img.alt = '미리보기'
-        img.classList.add('preview-image')
-
-        preview.appendChild(img)
+      if (file.url) {
+        img.src = `${file.url}`
+      } else {
+        reader.onload = (e) => {
+          img.src = e.target.result
+        }
+        reader.readAsDataURL(file)
       }
 
-      reader.readAsDataURL(file)
-      // this.state.value = file
-
-      const deleteBtn = document.createElement('i')
-      deleteBtn.classList.add('image-delete__btn')
-      deleteBtn.innerText = 'delete'
+      // const deleteBtn = document.createElement('i')
+      // deleteBtn.classList.add('image-delete__btn')
+      // deleteBtn.innerText = 'delete'
 
       preview.appendChild(img)
-      preview.appendChild(deleteBtn)
-      deleteBtn.addEventListener('click', this.onClickFileItemDelete.bind(this))
+      // preview.appendChild(deleteBtn)
+      // deleteBtn.addEventListener('click', this.onClickFileItemDelete.bind(this))
     } else {
       const preview = this.querySelector('.preview')
       preview.innerHTML = ''
@@ -138,6 +140,13 @@ class ImageUpload extends HTMLElement {
       this.querySelector('.upload').classList.remove('hidden')
     }
   }
+
+  onClickFileItemDelete(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    this.state.value = null
+  }
+
   /** @param {DragEvent} e */
   onDrop(e) {
     e.preventDefault()
@@ -149,8 +158,8 @@ class ImageUpload extends HTMLElement {
       return
     }
 
-    this.renderPreview(e.dataTransfer.files[0])
-
+    const file = e.dataTransfer.files[0]
+    this.state.value = file
     return
   }
   /** @param {DragEvent} e */
@@ -164,11 +173,6 @@ class ImageUpload extends HTMLElement {
     e.preventDefault()
 
     this.container.classList.remove('image-upload__drag-over')
-  }
-  onClickFileItemDelete(e) {
-    e.preventDefault()
-    e.stopPropagation()
-    this.state.value = null
   }
 }
 

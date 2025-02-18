@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/styles/guestBook.css" type="text/css" rel="stylesheet">
+    <link rel="icon" href="../assets/images/favicon.svg">
     <title>방명록</title>
+    <!--부트스트랩 CDN-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -21,8 +25,10 @@
             <ul id="guestbook-messages"></ul>
         </div>
         <div class="guestbook-form">
+            <label for="nickname">닉네임</label>
             <input type="text" id="nickname" placeholder="닉네임을 입력해주세요." required>
-            <textarea id="guestbook-message" placeholder="내용을 입력해주세요." required></textarea>
+            <input id="guestbook-message" placeholder="내용을 입력해주세요." required></input>
+            <input type="file" id="profileImage" accept="image/*">
             <button id="guestbook-submit">작성</button>
         </div>
     </div>
