@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
   <meta charset="UTF-8">
   <title>멤버 등록</title>
@@ -21,8 +20,7 @@
   <link rel="stylesheet" href="../../../assets/lib/quill/quill.snow.css" />
   <script src="../../../assets/lib/quill/quill.min.js"></script>
   <script src="../../../assets/lib/quill/image-resize.min.js"></script>
-  <!-- Quill (editor) -->
-  <!--제이쿼리 CDN-->
+  <!-- 제이쿼리 CDN -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
@@ -95,7 +93,6 @@
               <ul id="selectedSkillList"></ul>
             </div>
           </div>
-
           <div class="row">
             <div style="height: auto">자기소개</div>
             <div class="col">
@@ -111,47 +108,41 @@
     </div>
   </div>
 
-  <!-- 저장 로직 -->
+  <!-- 등록 로직 (Firebase 관련) -->
   <script type="module">
     import { app, db, collection, addDoc } from '../../../assets/js/firebase-config.js'
 
-    $('.cancel-button').click((e) => {
-      e.preventDefault()
-      location.href = 'list.html'
-    })
-
-    $('.register-button').click(async (e) => {
-      e.preventDefault()
-
-      // validate
-      document.querySelectorAll('text-field, dropdown-select').forEach((el) => {
-        el.validate()
-      })
+    // 등록 시 데이터 유효성 검사 및 Firebase 저장 처리
+    async function registerMember() {
+      // 모든 입력 컴포넌트에 대해 validate 호출
+      document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate())
 
       const name = $('#name').val()
-      if (name == undefined || name.trim() == '') {
+      if (!name || name.trim() === '') {
         alert('이름을 입력해주세요.')
         return
       }
 
       const img = $('.preview-image').attr('src')
-      if (img == undefined) {
+      if (!img) {
         alert('이미지를 업로드 해주세요.')
         return
       }
 
-      const mbti = $('#mbti').val().value
-      if (mbti == undefined || mbti.trim() == '') {
+      // mbti 컴포넌트의 경우 value 혹은 그 자체를 반환할 수 있으므로 유연하게 처리
+      const mbtiVal = $('#mbti').val()
+      const mbti = mbtiVal.value ? mbtiVal.value : mbtiVal
+      if (!mbti || mbti.trim() === '') {
         alert('MBTI를 입력해주세요.')
         return
       }
 
       const blog = $('#blog').val()
-      if (blog == undefined || blog.trim() == '') {
+      if (!blog || blog.trim() === '') {
         alert('블로그 주소를 입력해주세요.')
         return
       }
-
+      
       const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
       if (!blogRegex.test(blog)) {
         alert('올바르지 않은 블로그 주소입니다.')
@@ -160,26 +151,22 @@
       }
 
       const contact = $('#contact').val()
-      if (contact == undefined || contact.trim() == '') {
+      if (!contact || contact.trim() === '') {
         alert('연락처를 입력해주세요.')
         return
       }
 
       const email = $('#email').val()
-      if (email == undefined || email.trim() == '') {
+      if (!email || email.trim() === '') {
         alert('이메일을 입력해주세요.')
         return
       }
-
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
       if (!emailRegex.test(email)) {
         alert('올바르지 않은 이메일 주소입니다.')
         $('#email').children('label').first().addClass('text-field__error')
         return
       }
-
-      const skillElements = document.querySelectorAll('#selectedSkillList li span')
-      const skillList = Array.from(skillElements).map(el => el.textContent.trim())
 
       const contents = quill.getHtml()
       const tempContents = document.createElement('div')
@@ -189,79 +176,110 @@
         return
       }
 
-      let data = {
-        'name': name,
-        'img': img,
-        'mbti': mbti,
-        'blog': blog,
-        'contact': contact,
-        'email': email,
-        'skillList': skillList,
-        'introduce': contents,
-        'reg_dt': getDate()
+      const data = {
+        name,
+        img,
+        mbti,
+        blog,
+        contact,
+        email,
+        skillList: selectedSkills,
+        introduce: contents,
+        reg_dt: getDate()
       }
 
       try {
         await addDoc(collection(db, "member"), data)
         checkUnload = false
         alert("등록에 성공하였습니다.")
-        location.href="list.html"
+        location.href = "list.html"
       } catch (error) {
-        alert("등록 실패:", error)
+        alert("등록 실패: " + error)
       }
+    }
+
+    // 이벤트 바인딩 for 등록, 취소 버튼
+    $(document).ready(() => {
+      $('.cancel-button').click(e => {
+        e.preventDefault()
+        location.href = 'list.html'
+      })
+      $('.register-button').click(async e => {
+        e.preventDefault()
+        await registerMember()
+      })
     })
   </script>
 
-  <!-- 기본 세팅 -->
+  <!-- 기본 세팅 및 스킬/연락처/Quill 등 초기화 -->
   <script>
     let quill
     let checkUnload = true
-    $(window).on("beforeunload", function() {
+    let skills = []
+    let selectedSkills = []
+
+    // beforeunload 경고
+    $(window).on("beforeunload", () => {
       if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
     })
 
-    window.onload = function () {
+    // Quill 초기화 함수
+    function initQuill() {
       const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+        ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
         ['link', 'image', 'video', 'formula'],
-
-        [{ header: 1 }, { header: 2 }], // custom button values
+        [{ header: 1 }, { header: 2 }],
         [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-        [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-        [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-        [{ direction: 'rtl' }], // text direction
-
-        [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+        [{ script: 'sub' }, { script: 'super' }],
+        [{ indent: '-1' }, { indent: '+1' }],
+        [{ direction: 'rtl' }],
+        [{ size: ['small', false, 'large', 'huge'] }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ color: [] }, { background: [] }],
         [{ font: [] }],
         [{ align: [] }],
-
         ['clean'],
       ]
+
       Quill.prototype.getHtml = function () {
         return this.container.querySelector('.ql-editor').innerHTML
       }
-
       quill = new Quill('#editor', {
         modules: {
           toolbar: toolbarOptions,
-          imageResize: {
-            displaySize: true
-          }
+          imageResize: { displaySize: true }
         },
-        theme: 'snow',
+        theme: 'snow'
       })
+    }
 
-      // 스킬 검색 및 선택 기능 추가
+    // 연락처 입력 포맷 초기화
+    function initContactInput() {
+      $('#contact').on('input', function () {
+        let input = $(this).val()
+        let digits = input.replace(/\D/g, '')
+        let formatted = ''
+        if (digits.startsWith('02')) {
+          if (digits.length < 3) formatted = digits
+          else if (digits.length < 6) formatted = digits.substr(0, 2) + '-' + digits.substr(2)
+          else if (digits.length < 9) formatted = digits.substr(0, 2) + '-' + digits.substr(2, 3) + '-' + digits.substr(5)
+          else formatted = digits.substr(0, 2) + '-' + digits.substr(2, 4) + '-' + digits.substr(6, 4)
+        } else {
+          if (digits.length < 4) formatted = digits
+          else if (digits.length < 7) formatted = digits.substr(0, 3) + '-' + digits.substr(3)
+          else if (digits.length < 11) formatted = digits.substr(0, 3) + '-' + digits.substr(3, 3) + '-' + digits.substr(6)
+          else formatted = digits.substr(0, 3) + '-' + digits.substr(3, 4) + '-' + digits.substr(7, 4)
+        }
+        $(this).val(formatted)
+      })
+    }
+
+    // 스킬 검색 및 선택 초기화
+    function initSkillSearch() {
       const skillSearch = document.getElementById('skillSearch')
-      const skillList = document.getElementById('skillList')
-      const selectedSkillList = document.getElementById('selectedSkillList')
-
-      let skills = []
-      let selectedSkills = []
+      const skillListElem = document.getElementById('skillList')
+      const selectedSkillListElem = document.getElementById('selectedSkillList')
 
       // 스킬 목록 불러오기
       fetch('../../../assets/json/language.json')
@@ -272,114 +290,58 @@
         })
         .catch(error => console.error('Error loading skills:', error))
 
+      // 검색어 변경 시 업데이트
+      skillSearch.addEventListener('change', updateSkillList)
+
       // 검색 결과 업데이트 함수
       function updateSkillList() {
         const searchText = skillSearch.value.toLowerCase().trim()
-        // 검색어가 없으면 목록 초기화 후 함수 종료
-        if (!searchText) {
-          skillList.innerHTML = ''
-          return
-        }
-        skillList.innerHTML = ''
+        skillListElem.innerHTML = ''
+        if (!searchText) return
         skills.forEach(skill => {
           if (skill.name.toLowerCase().includes(searchText)) {
             const li = document.createElement('li')
             li.textContent = skill.name
             li.style.cursor = 'pointer'
-            // 클릭 시 선택된 스킬 목록에 추가
-            li.addEventListener('click', () => {
-              addSkill(skill.name)
-            })
-            skillList.appendChild(li)
+            li.addEventListener('click', () => addSkill(skill.name))
+            skillListElem.appendChild(li)
           }
         })
       }
 
-      // 선택된 스킬 목록 업데이트 함수
-      // selectedSkills 배열을 순회하며 li 생성
+      // 선택된 스킬 업데이트 함수
       function updateSelectedSkillList() {
-        selectedSkillList.innerHTML = ''
-
+        selectedSkillListElem.innerHTML = ''
         selectedSkills.forEach((skill, index) => {
           const li = document.createElement('li')
-          li.classList.add('chip') // 칩 스타일용 클래스
-
-          // 스킬 이름 영역
-          const skillNameSpan = document.createElement('span')
-          skillNameSpan.textContent = skill
-          li.appendChild(skillNameSpan)
-
-          // 삭제 아이콘
+          li.classList.add('chip')
+          const span = document.createElement('span')
+          span.textContent = skill
+          li.appendChild(span)
           const removeIcon = document.createElement('i')
           removeIcon.classList.add('material-icons', 'remove-icon')
           removeIcon.textContent = 'close'
-          // 클릭 시 스킬 제거
-          removeIcon.addEventListener('click', () => {
-            removeSkill(index)
-          })
+          removeIcon.addEventListener('click', () => removeSkill(index))
           li.appendChild(removeIcon)
-
-          selectedSkillList.appendChild(li)
+          selectedSkillListElem.appendChild(li)
         })
       }
 
-
-      // 스킬 추가 함수(중복 체크)
-      function addSkill(skillName) {
+      // 스킬 추가/제거 함수 (전역 selectedSkills 배열 사용)
+      window.addSkill = function(skillName) {
         if (!selectedSkills.includes(skillName)) {
           selectedSkills.push(skillName)
           updateSelectedSkillList()
         }
       }
 
-      // 스킬 제거 함수
-      function removeSkill(index) {
+      window.removeSkill = function(index) {
         selectedSkills.splice(index, 1)
         updateSelectedSkillList()
       }
-
-      // 입력창에 입력 시 검색 결과 업데이트
-      skillSearch.addEventListener('change', updateSkillList)
-
-      $('#contact').on('input', function () {
-        let input = $(this).val()
-        // 숫자만 남기기
-        let digits = input.replace(/\D/g, '')
-
-        let formatted = ''
-        // 만약 숫자가 "02"로 시작하면 서울 번호 형식 (예: 02-123-4567 또는 02-1234-5678)
-        if (digits.startsWith('02')) {
-          if (digits.length < 3) {
-            formatted = digits
-          } else if (digits.length < 6) {
-            // 예: 02-12
-            formatted = digits.substr(0, 2) + '-' + digits.substr(2)
-          } else if (digits.length < 9) {
-            // 예: 02-123-456
-            formatted = digits.substr(0, 2) + '-' + digits.substr(2, 3) + '-' + digits.substr(5)
-          } else {
-            // 예: 02-1234-5678 (최대 10자리로 가정)
-            formatted = digits.substr(0, 2) + '-' + digits.substr(2, 4) + '-' + digits.substr(6, 4)
-          }
-        } else {
-          // 그 외 번호는 보통 지역번호가 3자리 (예: 010, 031 등)
-          if (digits.length < 4) {
-            formatted = digits
-          } else if (digits.length < 7) {
-            // 예: 010-123
-            formatted = digits.substr(0, 3) + '-' + digits.substr(3)
-          } else if (digits.length < 11) {
-            // 예: 010-123-4567 (10자리)
-            formatted = digits.substr(0, 3) + '-' + digits.substr(3, 3) + '-' + digits.substr(6)
-          } else {
-            // 예: 010-1234-5678 (11자리)
-            formatted = digits.substr(0, 3) + '-' + digits.substr(3, 4) + '-' + digits.substr(7, 4)
-          }
-        }
-        $(this).val(formatted)
-      })
     }
 
+    // 날짜 반환 함수 (yyyy-MM-dd HH:mm:ss)
     function getDate() {
       const date = new Date()
       const year = date.getFullYear()
@@ -388,11 +350,15 @@
       const hours = String(date.getHours()).padStart(2, '0')
       const minutes = String(date.getMinutes()).padStart(2, '0')
       const seconds = String(date.getSeconds()).padStart(2, '0')
-
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
+
+    // 초기화 함수 호출
+    $(document).ready(() => {
+      initQuill()
+      initContactInput()
+      initSkillSearch()
+    })
   </script>
-
 </body>
-
 </html>
