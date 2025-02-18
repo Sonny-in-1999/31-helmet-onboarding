@@ -109,13 +109,14 @@
   </div>
 
   <script type="module">
-    import { db, doc, getDoc, updateDoc } from '../../../assets/js/firebase-config.js'
+    import { db, doc, getDoc, updateDoc, ref, storage, uploadBytes, getDownloadURL  } from '../../../assets/js/firebase-config.js'
 
     // 전역 변수
     let quill
     let checkUnload = true
     let skills = []
     let selectedSkills = []
+    let imgFiles = []
 
     // DOM 요소 캐싱
     const skillSearch = document.getElementById('skillSearch')
@@ -253,9 +254,20 @@
     function setData(data) {
       console.log("문서 데이터:", data)
       $('#name').val(data['name'])
-      $('.upload').addClass('hidden')
-      $('.preview').removeClass('hidden')
-      $('.preview').append(`<img src="${data['img']}" alt="미리보기" class="preview-image">`)
+
+      imgFiles.push(data['img'])
+      const imgFile = imgFiles.reduce((acc, cur) => {
+        const file = new File([''],  'temp.file')
+        Object.defineProperty(file, 'size', { value: '0' })
+        file.url = cur
+        acc.items.add(file)
+        return acc
+      }, new DataTransfer()).files
+
+      if(imgFile.length != 0) {
+        document.querySelector('#img').state.value = imgFile[0]
+      }
+
       $('#mbti').val(data['mbti'])
       $('#blog').val(data['blog'])
       $('#contact').val(data['contact'])
@@ -274,9 +286,9 @@
         return
       }
 
-      const img = $('.preview-image').attr('src')
-      if (!img) {
-        alert('이미지를 업로드 해주세요.')
+      const img = document.querySelector('#img').state.value
+      if (img == undefined) {
+        alert('이미지를 등록해주세요.')
         return
       }
 
@@ -327,9 +339,19 @@
         return
       }
 
+      
+      let imgUrl
+      if (document.querySelector('#img').state.value.url == undefined) {
+        const storageRef = ref(storage, `memberImages /${img.name}`)
+        await uploadBytes(storageRef, img);
+        imgUrl = await getDownloadURL(storageRef)
+      } else {
+        imgUrl = $('.preview-image').attr('src')
+      } 
+
       const updateData = {
         name,
-        img,
+        img: imgUrl,
         mbti,
         blog,
         contact,
@@ -337,7 +359,7 @@
         skillList: selectedSkills,
         introduce: contents
       }
-
+ 
       try {
         const params = new URLSearchParams(window.location.search)
         const id = params.get('id')

@@ -110,7 +110,7 @@
 
   <!-- 등록 로직 (Firebase 관련) -->
   <script type="module">
-    import { app, db, collection, addDoc } from '../../../assets/js/firebase-config.js'
+    import { app, db, collection, addDoc, ref, storage, uploadBytes, getDownloadURL } from '../../../assets/js/firebase-config.js'
 
     // 등록 시 데이터 유효성 검사 및 Firebase 저장 처리
     async function registerMember() {
@@ -123,9 +123,9 @@
         return
       }
 
-      const img = $('.preview-image').attr('src')
-      if (!img) {
-        alert('이미지를 업로드 해주세요.')
+      const img = document.querySelector('#img').state.value
+      if (img == undefined) {
+        alert('이미지를 등록해주세요.')
         return
       }
 
@@ -142,7 +142,7 @@
         alert('블로그 주소를 입력해주세요.')
         return
       }
-      
+
       const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
       if (!blogRegex.test(blog)) {
         alert('올바르지 않은 블로그 주소입니다.')
@@ -176,9 +176,13 @@
         return
       }
 
+      const storageRef = ref(storage, `memberImages /${img.name}`);
+      await uploadBytes(storageRef, img);
+      let imgUrl = await getDownloadURL(storageRef);
+
       const data = {
         name,
-        img,
+        img: imgUrl,
         mbti,
         blog,
         contact,

@@ -1,6 +1,6 @@
 // Firebase SDK 라이브러리 가져오기
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, query, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, query, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
 
@@ -21,6 +21,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 // 필요한 객체들을 export
-export { app, db, query, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, orderBy };
+export { app, db, query, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, orderBy, getDoc };
 // Firebase 스토리지 객체 export
 export { storage, ref, uploadBytes, getDownloadURL };
