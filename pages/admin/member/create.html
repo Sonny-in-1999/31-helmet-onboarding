@@ -103,7 +103,8 @@
             </div>
           </div>
           <div class="text-right">
-            <button class="register-button" name="post">등록</button>
+            <button class="cancel-button">취소</button>
+            <button class="register-button">등록</button>
           </div>
         </form>
       </div>
@@ -113,6 +114,12 @@
   <!-- 저장 로직 -->
   <script type="module">
     import { app, db, collection, addDoc } from '../../../assets/js/firebase-config.js'
+
+    $('.cancel-button').click((e) => {
+      e.preventDefault()
+      location.href = 'list.html'
+    })
+
     $('.register-button').click(async (e) => {
       e.preventDefault()
 
@@ -196,6 +203,7 @@
 
       try {
         await addDoc(collection(db, "member"), data)
+        checkUnload = false
         alert("등록에 성공하였습니다.")
         location.href="list.html"
       } catch (error) {
@@ -207,6 +215,11 @@
   <!-- 기본 세팅 -->
   <script>
     let quill
+    let checkUnload = true
+    $(window).on("beforeunload", function() {
+      if (checkUnload) return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다."
+    })
+
     window.onload = function () {
       const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'], // toggled buttons

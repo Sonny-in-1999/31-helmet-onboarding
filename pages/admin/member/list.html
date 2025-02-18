@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>멤버 관리 리스트</title>
+  <link href="../../../assets/styles/admin/admin.css" type="text/css" rel="stylesheet">
+  <link href="../../../assets/styles/admin/reset.css" type="text/css" rel="stylesheet">
+
+  <!--제이쿼리 CDN-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>멤버 관리 리스트</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>사진</th>
+          <th>이름</th>
+          <th>등록일</th>
+        </tr>
+      </thead>
+      <tbody id="member-list">
+      </tbody>
+    </table>
+    <div class="button-container">
+      <a href="create.html" class="register-button">등록하기</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { app, db, collection, getDocs, query, orderBy } from '../../../assets/js/firebase-config.js'
+
+    (async () => {
+      const q = query(collection(db, "member"), orderBy("reg_dt", "desc"));
+      const docs = await getDocs(q);
+
+      if (docs.size == 0) {
+        const html = `
+        <tr>
+          <td colspan='3' style='padding: 32px;'>등록된 데이터가 없습니다.</td>
+        </tr>
+        `
+        $('#member-list').append(html)
+      } else {
+        docs.forEach((doc) => {
+          let row = doc.data()
+
+          const html = `
+        <tr>
+          <td><img class="member-photo" src="${row['img']}" alt="멤버 사진"></td>
+          <td>${row['name']}</td>
+          <td>${row['reg_dt'].substring(0, 10)}</td>
+        </tr>
+        `
+          $('#member-list').append(html)
+        })
+      }
+    })()
+
+  </script>
+</body>
+
+</html>

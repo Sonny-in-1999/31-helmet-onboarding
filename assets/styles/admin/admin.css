@@ -55,6 +55,7 @@ tr {
 
 tr:hover {
   background-color: #f1f1f1;
+  cursor: pointer;
 }
 
 .member-photo {
@@ -72,7 +73,7 @@ tr:hover {
   /* 우측 정렬 */
 }
 
-.register-button {
+.register-button, .cancel-button {
   display: inline-block;
   background: #E8344E;
   color: #fff;
@@ -87,6 +88,15 @@ tr:hover {
 
 .register-button:hover {
   background: #ca1e38;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: #949494;
+}
+
+.cancel-button:hover {
+  background: #747474;
   cursor: pointer;
 }
 
