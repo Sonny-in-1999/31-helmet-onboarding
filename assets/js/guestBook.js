@@ -1,5 +1,7 @@
-import { db, collection, addDoc, getDocs, query, orderBy } from "./firebase-config.js";
+import { db, collection, addDoc, getDocs, query, orderBy, ref, storage, uploadBytes, getDownloadURL } from "./firebase-config.js";
 
+// 기본 프로필 이미지 URL
+const DEFAULT_PROFILE_IMAGE = "../assets/images/default_profile.jpg";
 
 document.addEventListener("DOMContentLoaded", async function () {
     const guestBookList = document.getElementById("guestbook-messages");
@@ -9,6 +11,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function addGuestbook() {
         const nickname = document.getElementById("nickname").value.trim();
         const message = document.getElementById("guestbook-message").value.trim();
+        const fileInput = document.getElementById("profileImage");
+        const file = fileInput.files[0];
+
+        let profileImageUrl = DEFAULT_PROFILE_IMAGE; // 기본 이미지
+
+        if (file) {
+            const storageRef = ref(storage, `profileImages/${file.name}`);
+            await uploadBytes(storageRef, file);
+            profileImageUrl = await getDownloadURL(storageRef);
+        }
 
         if (!nickname || !message) {
             alert("닉네임과 방명록 내용을 입력해주세요.");
@@ -19,14 +31,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             await addDoc(collection(db, "guestbook"), {
                 nickname: nickname,
                 message: message,
+                profileImageUrl,
                 createdAt: new Date()
             });
+
+            alert("방명록이 작성되었습니다!");
 
             document.getElementById("nickname").value = "";
             document.getElementById("guestbook-message").value = "";
             loadGuestbook(); // 작성 후 목록 갱신
         } catch (error) {
-            alert("방명록 작성 실패." + error);
+            alert("방명록 작성 실패.");
         }
     }
 
@@ -46,7 +61,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 const listItem = document.createElement("li");
-                listItem.innerHTML = `<strong>${data.nickname}</strong> - ${new Date(data.createdAt?.toDate()).toLocaleString()}<br>${data.message}`
+                listItem.classList.add("guestbook-item");
+                listItem.innerHTML = `
+                    <img src="${data.profileImageUrl}" class="profile-image">
+                    <div class="guestbook-content">
+                        <strong>${data.nickname}</strong> - ${new Date(data.createdAt?.toDate()).toLocaleString()}
+                        <p>${data.message}</p>
+                    </div>
+                `;
                 guestBookList.appendChild(listItem);
             });
         }

@@ -33,6 +33,30 @@ body {
     margin-bottom: 20px;
 }
 
+.guestbook-item {
+    display: flex;
+    align-items: center;
+    /* 세로 정렬 */
+    gap: 10px;
+    /* 이미지와 닉네임 사이 간격 */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-image {
+    width: 40px;
+    /* 크기 조절 */
+    height: 40px;
+    border-radius: 50%;
+    /* 원형 프로필 */
+    object-fit: cover;
+}
+
+.guestbook-content {
+    flex: 1;
+    /* 닉네임과 메시지가 남은 공간을 차지하도록 설정 */
+}
+
 .guestbook-list ul {
     list-style: none;
     padding: 0;
