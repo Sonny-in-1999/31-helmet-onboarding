@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+* {
+    font-family: "Gowun Dodum", serif;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -71,7 +77,9 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
+    border: 1px solid black;
+    padding: 20px;
 }
 
 .guestbook-form input,
@@ -83,14 +91,22 @@ body {
 }
 
 .guestbook-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+    width: 20%;
+    padding: 5px;
+    background-color: #ddd;
+    color: black;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
+    margin-left : auto;
+    
 }
 
 .guestbook-form button:hover {
-    background-color: #0056b3;
+   background-color: grey;
 }
+
+#nickname {
+    width: 50%
+}
+
