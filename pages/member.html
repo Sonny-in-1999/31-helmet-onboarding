@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../assets/styles/member.css" type="text/css" rel="stylesheet">
     <title>멤버 상세페이지</title>
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -31,7 +32,17 @@
 </head>
 
 <body>
-
-</body>
+    <div id="header"></div>
+    <div class="main-content">
+        멤버 상세페이지
+    </div>
+    <div id="footer"></div>
+<script>
+    // common header 및 footer 적용
+    $(function() {
+        $("#header").load("common/header.html");
+        $("#footer").load("common/footer.html");
+    })
+</script>
 
 </html>
