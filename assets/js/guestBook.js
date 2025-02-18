@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             document.getElementById("nickname").value = "";
             document.getElementById("guestbook-message").value = "";
+            document.getElementById("profileImage").value = "";
             loadGuestbook(); // 작성 후 목록 갱신
         } catch (error) {
             alert("방명록 작성 실패.");
