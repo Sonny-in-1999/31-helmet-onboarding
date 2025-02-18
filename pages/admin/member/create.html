@@ -112,7 +112,7 @@
 
   <!-- 저장 로직 -->
   <script type="module">
-    import { app, db, collection, addDoc } from '../../../assets/js/firebase-config.js';
+    import { app, db, collection, addDoc } from '../../../assets/js/firebase-config.js'
     $('.register-button').click(async (e) => {
       e.preventDefault()
 
@@ -145,7 +145,7 @@
         return
       }
 
-      const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/;
+      const blogRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/
       if (!blogRegex.test(blog)) {
         alert('올바르지 않은 블로그 주소입니다.')
         $('#blog').children('label').first().addClass('text-field__error')
@@ -194,7 +194,13 @@
         'reg_dt': getDate()
       }
 
-      await addDoc(collection(db, "member"), data);
+      try {
+        await addDoc(collection(db, "member"), data)
+        alert("등록에 성공하였습니다.")
+        location.href="list.html"
+      } catch (error) {
+        alert("등록 실패:", error)
+      }
     })
   </script>
 
@@ -363,14 +369,14 @@
 
     function getDate() {
       const date = new Date()
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
 
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
   </script>
 
