@@ -1,0 +1,164 @@
+.text-field {
+  --border-color: rgba(0, 0, 0, 0.16);
+  --label-color: #999;
+  --focus-color: #4593ff;
+  --negative-color: #c10015;
+  --input-height: 50px;
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  min-height: var(--input-height);
+  transition: border-color 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.text-field:has(:where(input, textarea):focus) {
+  --border-color: var(--focus-color);
+  --label-color: var(--focus-color);
+}
+
+.text-field.text-field__readonly {
+  border-style: dashed;
+}
+
+.text-field.text-field__error {
+  --border-color: var(--negaive-color);
+}
+
+.text-field :where(input, textarea) {
+  width: 100%;
+  min-height: 20px;
+  line-height: 20px;
+  outline: 0;
+  padding: 11px 12px;
+  font-size: 16px;
+  font-weight: normal;
+}
+.text-field textarea {
+  line-height: 1.5em;
+}
+
+.text-field .text-field__action {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: calc(var(--input-height) - 4px);
+}
+
+.text-field .text-field__action i {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+
+  display: block;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+  opacity: 0.6;
+  outline: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.text-field .text-field__action i:hover {
+  opacity: 1;
+}
+
+.text-field .text-field__action .text-field__error__icon {
+  opacity: 1;
+  color: var(--negative-color);
+  display: none;
+}
+.text-field.text-field__error {
+  --border-color: var(--negative-color);
+}
+
+.text-field:has(.text-field__label) {
+  margin-top: 21px;
+}
+
+.text-field .text-field__label {
+  position: absolute;
+  top: -21px;
+  left: 0;
+  color: var(--label-color);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 700;
+}
+
+.text-field .text-field__action > i {
+  display: none;
+}
+text-field[type='password'] .text-field__action .text-field__action__pw-eye {
+  display: block;
+}
+text-field[clearable] .text-field__action .text-field__action__clear {
+  display: block;
+}
+.text-field.text-field__error .text-field__action .text-field__error__icon {
+  display: block;
+}
+
+.text-field.text-field__dense {
+  --input-height: 36px;
+}
+.text-field.text-field__dense :where(input, textarea) {
+  padding: 4px 12px;
+}
+
+.text-field .text-field__max-count {
+  display: none;
+  color: #bbb;
+  padding: 12px;
+  gap: 4px;
+}
+.text-field .text-field__max-count > div {
+  font-weight: 500;
+}
+
+.text-field :where(input, textarea)::placeholder {
+  font-weight: normal;
+  color: #ccc;
+}
+
+text-field:has(.text-field__disabled) {
+  cursor: not-allowed;
+}
+.text-field.text-field__disabled {
+  pointer-events: none;
+  background-color: #f1f1f1;
+}
+
+.text-field.text-field__disabled :where(input, textarea) {
+  background-color: #f1f1f1;
+}

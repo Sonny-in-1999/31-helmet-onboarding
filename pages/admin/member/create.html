@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>멤버 등록</title>
+  <link href="../../../assets/styles/admin/admin.css" type="text/css" rel="stylesheet">
+  <link href="../../../assets/styles/admin/reset.css" type="text/css" rel="stylesheet">
+  <link href="../../../assets/js/text-field/index.css" type="text/css" rel="stylesheet">
+  <script src="../../../assets/js/text-field/index.js" defer></script>
+
+  <link href="../../../assets/js/image-upload/index.css" type="text/css" rel="stylesheet">
+  <script src="../../../assets/js/image-upload/index.js" defer></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Quill (editor) -->
+  <link rel="stylesheet" href="../../../assets/lib/quill/quill.snow.css" />
+  <script src="../../../assets/lib/quill/quill.min.js"></script>
+  <script src="../../../assets/lib/quill/image-resize.min.js"></script>
+  <!-- Quill (editor) -->
+</head>
+
+<body>
+  <div class="container">
+    <h1>멤버 등록</h1>
+    <div class="card content">
+      <div class="card__section">
+        <form class="post">
+          <div class="row">
+            <div>이름</div>
+            <div class="col">
+              <text-field required clearable placeholder="이름" native-name="name"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>이미지</div>
+            <div class="col">
+              <image-upload></image-upload>
+            </div>
+          </div>
+          <div class="row">
+            <div>MBTI</div>
+            <div class="col">
+              <text-field required clearable placeholder="MBTI" native-name="mbti"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>블로그</div>
+            <div class="col">
+              <text-field required clearable placeholder="블로그" native-name="blog"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>연락처</div>
+            <div class="col">
+              <text-field required clearable placeholder="연락처" native-name="contact"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>이메일</div>
+            <div class="col">
+              <text-field required clearable placeholder="이메일" native-name="email"></text-field>
+            </div>
+          </div>
+          <div class="row">
+            <div>스킬</div>
+            <div class="col">
+              <text-field clearable placeholder="스킬 검색" id="skillSearch"></text-field>
+              <!-- 검색 결과를 표시하는 영역 -->
+              <ul id="skillList"></ul>
+              <!-- 클릭해서 추가된 스킬을 표시하는 영역 -->
+              <ul id="selectedSkillList"></ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div style="height: auto">자기소개</div>
+            <div class="col">
+              <div id="editor"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <button class="register-button" name="post">등록</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.onload = function () {
+      const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+
+        [{ header: 1 }, { header: 2 }], // custom button values
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+        [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+        [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+        [{ direction: 'rtl' }], // text direction
+
+        [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+
+        ['clean'],
+      ]
+      const quill = new Quill('#editor', {
+        modules: {
+          toolbar: toolbarOptions,
+          imageResize: {
+            displaySize: true
+          }
+        },
+        theme: 'snow',
+      })
+
+      // 스킬 검색 및 선택 기능 추가
+      const skillSearch = document.getElementById('skillSearch')
+      const skillList = document.getElementById('skillList')
+      const selectedSkillList = document.getElementById('selectedSkillList')
+
+      let skills = []
+      let selectedSkills = []
+
+      // 스킬 목록 불러오기
+      fetch('../../../assets/json/language.json')
+        .then(response => response.json())
+        .then(data => {
+          skills = data
+          updateSkillList()
+        })
+        .catch(error => console.error('Error loading skills:', error))
+
+      // 검색 결과 업데이트 함수
+      function updateSkillList() {
+        const searchText = skillSearch.value.toLowerCase().trim()
+        // 검색어가 없으면 목록 초기화 후 함수 종료
+        if (!searchText) {
+          skillList.innerHTML = ''
+          return
+        }
+        skillList.innerHTML = ''
+        skills.forEach(skill => {
+          if (skill.name.toLowerCase().includes(searchText)) {
+            const li = document.createElement('li')
+            li.textContent = skill.name
+            li.style.cursor = 'pointer'
+            // 클릭 시 선택된 스킬 목록에 추가
+            li.addEventListener('click', () => {
+              addSkill(skill.name)
+            })
+            skillList.appendChild(li)
+          }
+        })
+      }
+
+      // 선택된 스킬 목록 업데이트 함수
+      // selectedSkills 배열을 순회하며 li 생성
+      function updateSelectedSkillList() {
+        selectedSkillList.innerHTML = ''
+
+        selectedSkills.forEach((skill, index) => {
+          const li = document.createElement('li')
+          li.classList.add('chip') // 칩 스타일용 클래스
+
+          // 스킬 이름 영역
+          const skillNameSpan = document.createElement('span')
+          skillNameSpan.textContent = skill
+          li.appendChild(skillNameSpan)
+
+          // 삭제 아이콘
+          const removeIcon = document.createElement('i')
+          removeIcon.classList.add('material-icons', 'remove-icon')
+          removeIcon.textContent = 'close'
+          // 클릭 시 스킬 제거
+          removeIcon.addEventListener('click', () => {
+            removeSkill(index)
+          })
+          li.appendChild(removeIcon)
+
+          selectedSkillList.appendChild(li)
+        })
+      }
+
+
+      // 스킬 추가 함수(중복 체크)
+      function addSkill(skillName) {
+        if (!selectedSkills.includes(skillName)) {
+          selectedSkills.push(skillName)
+          updateSelectedSkillList()
+        }
+      }
+
+      // 스킬 제거 함수
+      function removeSkill(index) {
+        selectedSkills.splice(index, 1)
+        updateSelectedSkillList()
+      }
+
+      // 입력창에 입력 시 검색 결과 업데이트
+      skillSearch.addEventListener('change', updateSkillList)
+    }
+  </script>
+</body>
+
+</html>

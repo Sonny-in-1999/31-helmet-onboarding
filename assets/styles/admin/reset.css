@@ -1,0 +1,109 @@
+.flex,
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.col {
+    flex: 1;
+}
+
+[class*='col-'] {
+    flex: unset;
+    width: unset;
+}
+
+.col-1 {
+    flex-basis: 8.33333%;
+}
+
+.col-2 {
+    flex-basis: 16.66667%;
+}
+
+.col-3 {
+    flex-basis: 25%;
+}
+
+.col-4 {
+    flex-basis: 33.33333%;
+}
+
+.col-5 {
+    flex-basis: 41.66667%;
+}
+
+.col-6 {
+    flex-basis: 50%;
+}
+
+.col-7 {
+    flex-basis: 58.33333%;
+}
+
+.col-8 {
+    flex-basis: 66.66667%;
+}
+
+.col-9 {
+    flex-basis: 75%;
+}
+
+.col-10 {
+    flex-basis: 83.33333%;
+}
+
+.col-11 {
+    flex-basis: 91.66667%;
+}
+
+.col-12 {
+    flex-basis: 100%;
+}
+
+.row>.col,
+.row>.col-1,
+.row>.col-2,
+.row>.col-3,
+.row>.col-4,
+.row>.col-5,
+.row>.col-6,
+.row>.col-7,
+.row>.col-8,
+.row>.col-9,
+.row>.col-10,
+.row>.col-11,
+.row>.col-12 {
+    height: 100%;
+}
+
+.flex>*,
+.row>* {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.flex>*,
+.column>* {
+    height: auto;
+    min-height: 0;
+    max-height: 100%;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}

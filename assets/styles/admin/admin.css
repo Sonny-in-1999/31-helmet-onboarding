@@ -1,0 +1,200 @@
+/* Google Fonts 사용 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  border: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f0f2f5;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+h1 {
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  background: #E8344E;
+  color: #fff;
+  font-size: 1.5em;
+}
+
+/* 멤버 리스트용 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f9f9f9;
+}
+
+th,
+td {
+  padding: 16px;
+  text-align: center;
+}
+
+tr {
+  border-bottom: 1px solid #eaeaea;
+  transition: background-color 0.3s ease;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.member-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* 리스트 페이지 등록 버튼 스타일 */
+.button-container {
+  padding: 20px;
+  text-align: right;
+  /* 우측 정렬 */
+}
+
+.register-button {
+  display: inline-block;
+  background: #E8344E;
+  color: #fff;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+  box-shadow: 0 1px 5px #0003, 0 2px 2px #00000024, 0 3px 1px -2px #0000001f;
+}
+
+.register-button:hover {
+  background: #ca1e38;
+  cursor: pointer;
+}
+
+/* 멤버 등록용 폼 스타일 */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+form.post {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form.post>.row {
+  align-items: center;
+}
+
+form.post>.row> :nth-child(1) {
+  align-self: baseline;
+  padding: 13px 32px 13px 8px;
+  width: 70px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: right;
+}
+
+form.post>.row> :nth-child(2) {
+  flex: 1;
+}
+
+form.post>.row> :nth-child(3) {
+  align-self: baseline;
+  padding: 8px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.card__section {
+  padding: 16px;
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+#skillList {
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#skillList li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+#skillList li:hover {
+  background: #f0f0f0;
+}
+
+/* 선택된 스킬 목록을 가로 나열 & 줄바꿈 */
+#selectedSkillList {
+  margin-top: 10px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap; /* 칸이 모자라면 자동 줄바꿈 */
+  gap: 8px;        /* 칩 사이 간격 */
+}
+
+/* 칩 스타일 */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d4e2ff;   /* 테두리 색상 */
+  background-color: #f5f9ff;   /* 배경 색상 */
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;         /* pill 형태 */
+  font-size: 14px;
+  position: relative;
+  cursor: default;
+}
+
+/* 칩 안의 텍스트 (span) */
+.chip span {
+  margin-right: 8px;
+}
+
+/* 아이콘 공통 스타일 */
+.chip i {
+  font-size: 18px;     /* 아이콘 크기 */
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+}
+
+/* 호버 시 색상 변경 */
+.chip i:hover {
+  color: #333;
+}
