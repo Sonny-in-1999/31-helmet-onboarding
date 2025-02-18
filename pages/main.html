@@ -6,28 +6,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/styles/main.css" type="text/css" rel="stylesheet">
     <title>메인 페이지</title>
-    <!--제이쿼리 CDN-->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <!-- firebase 설정-->
-    <script type="module">
-        import { app, db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '../assets/js/firebase-config.js';
-    </script>
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Pen+Script&display=swap');
+
+        body {
+            background-color: #fdeef4;
+            background-image:
+                radial-gradient(white 8%, transparent 20%),
+                radial-gradient(white 8%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: "Nanum Pen Script", serif;
+        }
+
+        .card-text {
+            line-height: 2;
+        }
+
+        #container {
+            margin-top: 80px;
+        }
+    </style>
 </head>
 
 <body>
     <div id="header"></div>
-    <div class="main-content">
-        메인페이지
+
+    <!-- 인트로 -->
+    <div class="container d-flex justify-content-center mt-3">
+        <div class="main-content w-50">
+            <div class="p-3 mb-2 text-center rounded-5 shadow-lg"
+                style="background-color: #FADADD; border-radius: 20px !important;">
+                <div class="container-fluid py-3">
+                    <h1 class="display-5 fw-bold">WE ARE HELMET JO</h1>
+                    <p class="col-md-8 mx-auto fs-5">
+                        Our team has chosen the slogan "We Charge Forward."
+                        No matter what challenges come our way, the five of us will tackle them head-on with our
+                        helmets.
+                        We are ready to take on any challenge. Thank you! 🚀💪💪💪💪💪
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- 소개 -->
+    <div class="container w-75 mt-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col align-self-stretch">
+                <h3 class="text-center">Our Team Rules</h3>
+                <div class="card h-100 shadow-lg" style="background-color: #f7e4e5;">
+                    <div class="card-body">
+                        <h5 class="card-title">우리팀 규칙</h5>
+                        <p class="card-text">
+                            ⏰ 시간 약속 지키기!<br>
+                            💬 소통과 공유하기!<br>
+                            🤝 문제 해결에 집중하기!<br>
+                            🖥️ 협업을 위해 화면 공유하기!<br>
+                            💪 건피는 필수입니다.<br>
+                            📅 스크럼 시간 <br>
+                            ⏰ 오전 9시, 오후 2시, 오후 8시 30분을 반드시 지키겠습니다.<br>
+                            📢 스크럼 미참여 시 반드시 미리 알려주겠습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col align-self-stretch">
+                <h3 class="text-center">TMI</h3>
+                <div class="card h-100 shadow-lg" style="background-color: #f7e4e5;">
+                    <img src="https://images.unsplash.com/photo-1676276375809-da1416754e97?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        class="card-img-top" alt="...">
+                </div>
+            </div>
+            <div class="col align-self-stretch">
+                <h3 class="text-center">Ultimate Goal</h3>
+                <div class="card h-100 shadow-lg" style="background-color: #f7e4e5;">
+                    <div class="card-body">
+                        <h5 class="card-title">복 무 신 조</h5>
+                        <p class="card-text">
+                            📆 하나. 매일 일정 소화하려고 노력하겠습니다.<br>
+                            🙋‍♂️ 둘. 부끄러워도 물어보려고 노력하겠습니다. <br>
+                            📝 셋. TIL 매일 쓰도록 노력하겠습니다. <br>
+                            🎯 넷. 수료까지 화이팅하겠습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 멤버 카드 -->
+    <div class="container" id="container">
+        <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center"></div>
+    </div>
+
+    <!-- 맴버카드 -->
+    <div class="container" id="container">
+        <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center">
+            <div class="col">
+                <div class="card h-100 text-center shadow-lg p-3 bg-light rounded-4">
+                    <img src="../assets/images/green_resized.png" class="rounded-circle mx-auto mt-3" alt="Member 1"
+                        style="width: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title">박민혁</h5>
+                        <p class="card-text">ISFJ</p>
+                        <p class="text-muted"><a href="https://velog.io/@pospara9356/posts" target="_blank">BLOG</a></p>
+                        <p class="text-muted">010-4646-9356</p>
+                        <p class="text-muted">pospara2@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="footer"></div>
 
+    <!-- JavaScript 코드는 BODY 맨 아래에 배치 -->
+    <script type="module">
+        import { app, db, collection, getDocs, query, orderBy } from '../assets/js/firebase-config.js';
+
+        (async () => {
+            const q = query(collection(db, "member"), orderBy("reg_dt", "desc"));
+            const docs = await getDocs(q);
+
+            if (docs.size == 0) {
+                const html = `
+                    <div class="text-center p-5">
+                        <p>등록된 멤버가 없습니다.</p>
+                    </div>`;
+                document.querySelector('#container .row').innerHTML = html;
+            } else {
+                docs.forEach((doc) => {
+                    let row = doc.data();
+
+                    const html = `
+                        <div class="col">
+                            <div class="card h-100 text-center shadow-lg p-3 bg-light rounded-4">
+                                <img src="${row['img']}" class="rounded-circle mx-auto mt-3" alt="${row['name']}" style="width: 100px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${row['name']}</h5>
+                                    <p class="card-text">${row['mbti']}</p>
+                                    <p class="text-muted">${row['blog'] ? `<a href="${row['blog']}" target="_blank">BLOG</a>` : 'BLOG 없음'}</p>
+                                    <p class="text-muted">${row['phone'] ? row['phone'] : '전화번호 없음'}</p>
+                                    <p class="text-muted">${row['email'] ? row['email'] : '이메일 없음'}</p>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    document.querySelector('#container .row').insertAdjacentHTML('beforeend', html);
+                });
+            }
+        })();
+    </script>
+
     <script>
-        // common header 및 footer 적용
+        // Header & Footer 적용
         $(function () {
             $("#header").load("common/header.html");
             $("#footer").load("common/footer.html");
-        })
+        });
     </script>
+
 </body>
+
 </html>
