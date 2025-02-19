@@ -2,19 +2,25 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  height: 100vh;
- 
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.push {
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
 
 .main-container {
   display: flex;
-  flex-direction: row
-  ;
- 
+  flex-direction: row;
+
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
-   
+
 }
 
 .left-section {
@@ -29,9 +35,11 @@ body {
   border: solid 1px rgb(82, 82, 82);
   border-radius: 10px;
 }
+
 .left-section h2 {
   margin-bottom: 15px;
 }
+
 .profile-image img {
   border-radius: 50%;
   width: 150px;
@@ -61,22 +69,22 @@ body {
 .right-section h2 {
   font-size: 22px;
   margin-bottom: 5px;
-  
 }
 
 .right-section .skillList {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  
   margin-bottom: 25px;
 }
 
 .right-section .skillList span {
-  padding: 8px 15px;
-  background-color: #ffebf7;
-  border-radius: 20px;
-  font-size: 14px;
+  border: 1px solid #d4e2ff;
+  background-color: #f5f9ff;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-size: 16px;
 }
 
 .right-section a {
@@ -90,7 +98,8 @@ body {
 
 #introduce {
   margin-top: 5px;
-  font-size: 16px;
   line-height: 1.6;
   margin-bottom: 25px;
+  padding: 0;
+  min-height: 50px;
 }

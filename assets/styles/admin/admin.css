@@ -154,7 +154,7 @@ form.post>.row> :nth-child(3) {
 }
 
 .ql-editor {
-  min-height: 200px;
+  height: 250px;
 }
 
 #skillList {

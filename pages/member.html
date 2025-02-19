@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/styles/member.css" type="text/css" rel="stylesheet">
-    <title>멤버 상세페이지</title>
+    <title>WE ARE HELMET JO : MEMBER</title>
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="icon" href="../assets/images/favicon.svg">
-    <!-- firebase 설정-->
-    
+    <link href="/assets/lib/quill/quill.snow.css" type="text/css" rel="stylesheet">
+    <style>
+        body {
+            visibility: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -18,92 +22,93 @@
     <div class="main-container">
         <div class="left-section">
             <div class="profile-image">
-              <img id="img" src="" alt="프로필 이미지">
+                <img id="img" src="" alt="프로필 이미지">
             </div>
             <div class="contact">
-              <h2><strong id="name">이름</strong></h2>
-              <p><span>MBTI:</span> <span id="mbti">MBTI 값</span></p>
-              <p><span>📞</span> <span id="contact">연락처</span></p>
-              <p><span>✉</span> <span id="email">이메일</span></p>
+                <h2><strong id="name">이름</strong></h2>
+                <p><span>MBTI:</span> <span id="mbti">MBTI 값</span></p>
+                <p><span>📞</span> <span id="contact">연락처</span></p>
+                <p><span>✉</span> <span id="email">이메일</span></p>
             </div>
-          </div>
-          <div class="right-section">
+        </div>
+        <div class="right-section">
             <h2>자기소개</h2>
-            <p id="introduce"></p>
+            <div id="introduce" class="ql-editor"></div>
             <h2>나의 기술</h2>
             <div class="skillList">
-              
-              <span>JavaScript</span>
-              <span>React</span>
+                <span>JavaScript</span>
+                <span>React</span>
             </div>
-           
-            
-            
             <h2>블로그</h2>
             <a href="#" id="blog">블로그 링크</a>
-          </div>
+        </div>
     </div>
 
-    <script type="module">
-    
-
-    import { app, db, doc, getDoc } from '../assets/js/firebase-config.js';
-
-    async function loadMember() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const memberId = urlParams.get('id');  // URL에서 id 값을 가져옴
-    if (!memberId) {
-        alert('멤버 ID가 없습니다.');
-        return;
-    }
-
-    try {
-        console.log("불러올 멤버 ID:", memberId); // 멤버 ID 확인
-
-        // Firestore에서 특정 멤버 ID 문서 가져오기
-        const q = doc(db, "member", memberId);
-        const docs = await getDoc(q);
-
-        if (docs.exists()) {
-            const data = docs.data();
-            console.log("불러온 데이터:", data);  // 데이터 확인
-
-            $('#img').attr('src', data.img || 'default-image.jpg'); 
-            $('#name').text(data.name || '이름 없음');
-            $('#mbti').text(data.mbti || 'MBTI 없음');
-            $('#contact').text(data.contact || '연락처 없음');
-            $('#email').text(data.email || '이메일 없음');
-            $('#introduce').html(data.introduce || '소개 없음');
-            $('#blog').attr('href', data.blog || '#').text(data.blog || '블로그 없음').attr('target', data.blog ? '_blank' : '');
-
-            $('.skillList').empty(); // 기존 목록 초기화
-            if (Array.isArray(data.skillList)) {
-                data.skillList.forEach(skill => {
-                    $('.skillList').append(`<span class='tag'>${skill}</span>`);
-                });
-            }
-        } else {
-            console.warn("멤버 데이터를 찾을 수 없습니다.");
-            alert('멤버 정보를 찾을 수 없습니다.');
-        }
-    } catch (error) {
-        console.error("데이터 불러오기 오류:", error);
-        alert("멤버 데이터를 가져오는 중 오류가 발생했습니다.");
-    }
-}
-
-loadMember();
-
-    </script>
-    
+    <section class="push"></section>
     <div id="footer"></div>
 
-<script>
-    // common header 및 footer 적용
-    $(function() {
-        $("#header").load("common/header.html");
-        $("#footer").load("common/footer.html");
-    });
-</script>
+    <script type="module">
+        import { app, db, doc, getDoc } from '../assets/js/firebase-config.js';
+
+        async function loadMember() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberId = urlParams.get('id');  // URL에서 id 값을 가져옴
+            if (!memberId) {
+                alert('멤버 ID가 없습니다.');
+                location.href = '/pages/main.html';
+                return;
+            }
+
+            try {
+                console.log("불러올 멤버 ID:", memberId); // 멤버 ID 확인
+
+                // Firestore에서 특정 멤버 ID 문서 가져오기
+                const q = doc(db, "member", memberId);
+                const docs = await getDoc(q);
+
+                if (docs.exists()) {
+                    const data = docs.data();
+                    console.log("불러온 데이터:", data);  // 데이터 확인
+
+                    $('#img').attr('src', data.img || 'default-image.jpg');
+                    $('#name').text(data.name || '이름 없음');
+                    $('#mbti').text(data.mbti || 'MBTI 없음');
+                    $('#contact').text(data.contact || '연락처 없음');
+                    $('#email').text(data.email || '이메일 없음');
+                    $('#introduce').html(data.introduce || '소개 없음');
+                    $('#blog').attr('href', data.blog || '#').text(data.blog || '블로그 없음').attr('target', data.blog ? '_blank' : '');
+
+                    $('.skillList').empty(); // 기존 목록 초기화
+                    if (Array.isArray(data.skillList)) {
+                        data.skillList.forEach(skill => {
+                            $('.skillList').append(`<span class='tag'>${skill}</span>`);
+                        });
+                    }
+                } else {
+                    console.warn("멤버 데이터를 찾을 수 없습니다.");
+                    alert('멤버 정보를 찾을 수 없습니다.');
+                    location.href = '/pages/main.html';
+                }
+            } catch (error) {
+                console.error("데이터 불러오기 오류:", error);
+                alert("멤버 데이터를 가져오는 중 오류가 발생했습니다.");
+                location.href = '/pages/main.html';
+            }
+        }
+
+        loadMember();
+
+    </script>
+
+    <script>
+        // common header 및 footer 적용
+        $(function () {
+            $("#header").load("/pages/common/header.html", function () {
+                $("#footer").load("/pages/common/footer.html", function () {
+                    $("body").css("visibility", "visible");
+                });
+            });
+        });
+    </script>
 
 </html>
