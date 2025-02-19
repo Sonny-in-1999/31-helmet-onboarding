@@ -278,6 +278,8 @@
     // common header 및 footer 적용
     $(function () {
       $("#header").load("/pages/admin/common/header.html", function () {
+        const menu = $("#header .menu").detach();
+        $("#header").after(menu);
         $("#footer").load("/pages/common/footer.html", function () {
           $("body").css("visibility", "visible");
         });

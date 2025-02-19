@@ -161,8 +161,7 @@
                 });
             }
 
-            // 멤버 로딩 끝나면 scroll
-            scrollToHashElement();
+            scrollToHashElement()
         })();
 
         // scroll 함수
@@ -170,12 +169,12 @@
             if (location.hash) {
                 const target = document.querySelector(location.hash);
                 if (target) {
-                    const headerOffset = 55;
+                    const headerOffset = 60;
                     const elementPosition = target.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
                     window.scrollTo({
-                        top: offsetPosition,
+                        top: offsetPosition ,
                         behavior: "smooth"
                     });
                 }
@@ -192,9 +191,14 @@
     </script>
 
     <script>
-        // common header 및 footer 적용
         $(function () {
+            // header 로드 후
             $("#header").load("common/header.html", function () {
+                // header 내부의 .menu 요소 분리(detach)
+                const menu = $("#header .menu").detach();
+                // header 아래에 .menu 추가
+                $("#header").after(menu);
+                // footer 로드 후 body 표시
                 $("#footer").load("common/footer.html", function () {
                     $("body").css("visibility", "visible");
                 });

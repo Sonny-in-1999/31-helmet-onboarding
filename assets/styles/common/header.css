@@ -6,7 +6,7 @@
 
 header {
     text-align: center;
-    padding: 20px 0;
+    padding: 20px 0 0 0;
     line-height: 1.5;
 }
 
@@ -30,6 +30,10 @@ header {
     gap: 20px;
     background-color: #333;
     padding: 10px 0;
+    position: sticky;
+    top: 0;       
+    z-index: 1000; 
+    margin-bottom: 20px;
 }
 
 .menu a {

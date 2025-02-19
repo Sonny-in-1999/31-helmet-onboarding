@@ -103,14 +103,18 @@
     </script>
 
     <script>
-        // common header 및 footer 적용
         $(function () {
-            $("#header").load("/pages/common/header.html", function () {
-                $("#footer").load("/pages/common/footer.html", function () {
+            // header 로드 후
+            $("#header").load("common/header.html", function () {
+                // header 내부의 .menu 요소 분리(detach)
+                const menu = $("#header .menu").detach();
+                // header 아래에 .menu 추가
+                $("#header").after(menu);
+                // footer 로드 후 body 표시
+                $("#footer").load("common/footer.html", function () {
                     $("body").css("visibility", "visible");
                 });
             });
         });
     </script>
-
 </html>
