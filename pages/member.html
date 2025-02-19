@@ -9,10 +9,12 @@
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="icon" href="../assets/images/favicon.svg">
-    <!-- firebase 설정-->
-    <script type="module">
-        import { app, db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '../assets/js/firebase-config.js';
-    </script>
+
+    <style>
+        body {
+            visibility: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -21,12 +23,20 @@
         멤버 상세페이지
     </div>
     <div id="footer"></div>
-<script>
-    // common header 및 footer 적용
-    $(function() {
-        $("#header").load("common/header.html");
-        $("#footer").load("common/footer.html");
-    })
-</script>
+
+    <!-- firebase 설정-->
+    <script type="module">
+        import { app, db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '../assets/js/firebase-config.js';
+    </script>
+    <script>
+        // common header 및 footer 적용
+        $(function () {
+            $("#header").load("common/header.html", function () {
+                $("#footer").load("common/footer.html", function () {
+                    $("body").css("visibility", "visible");
+                });
+            });
+        });
+    </script>
 
 </html>

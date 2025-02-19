@@ -19,6 +19,12 @@
     <link href="../assets/js/text-field/index.css" type="text/css" rel="stylesheet">
     <script src="../assets/js/text-field/index.js" defer></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        body {
+            visibility: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,10 +54,12 @@
     <script>
         // common header 및 footer 적용
         $(function () {
-            $("#header").load("common/header.html");
-            $("#footer").load("common/footer.html");
-        })
+            $("#header").load("common/header.html", function () {
+                $("#footer").load("common/footer.html", function () {
+                    $("body").css("visibility", "visible");
+                });
+            });
+        });
     </script>
 </body>
-
 </html>
