@@ -61,13 +61,14 @@ body {
 .right-section h2 {
   font-size: 22px;
   margin-bottom: 5px;
-
+  
 }
- 
+
 .right-section .skillList {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  
   margin-bottom: 25px;
 }
 

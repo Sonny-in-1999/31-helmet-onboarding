@@ -29,7 +29,7 @@
           </div>
           <div class="right-section">
             <h2>자기소개</h2>
-            <p><span id="introduce"></span> </p>
+            <p id="introduce"></p>
             <h2>나의 기술</h2>
             <div class="skillList">
               
@@ -73,8 +73,8 @@
             $('#mbti').text(data.mbti || 'MBTI 없음');
             $('#contact').text(data.contact || '연락처 없음');
             $('#email').text(data.email || '이메일 없음');
-            $('#introduce').text(data.introduce || '소개 없음');
-            $('#blog').attr('href', data.blog || '#').text(data.blog ? '블로그 방문' : '블로그 없음');
+            $('#introduce').html(data.introduce || '소개 없음');
+            $('#blog').attr('href', data.blog || '#').text(data.blog || '블로그 없음').attr('target', data.blog ? '_blank' : '');
 
             $('.skillList').empty(); // 기존 목록 초기화
             if (Array.isArray(data.skillList)) {
