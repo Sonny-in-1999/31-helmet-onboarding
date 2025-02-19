@@ -19,7 +19,7 @@
     <div id="header"></div>
 
     <!-- 인트로 -->
-    <div class="container d-flex justify-content-center mt-3">
+    <div id="intro" class="container d-flex justify-content-center mt-3">
         <div class="main-content w-50">
             <div class="p-3 mb-2 text-center rounded-5 shadow-lg"
                 style="background-color: #FADADD; border-radius: 20px !important;">
@@ -37,7 +37,7 @@
     </div>
 
     <!-- 소개 -->
-    <div class="container w-75 mt-4">
+    <div id="helmet" class="container w-75 mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col align-self-stretch">
                 <h3 class="text-center">Our Team Rules</h3>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- 멤버 카드 -->
-    <div class="container" id="container">
+    <div class="container" id="memberCard">
         <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center"></div>
     </div>
 
@@ -101,7 +101,7 @@
                     <div class="text-center p-5">
                         <p>등록된 멤버가 없습니다.</p>
                     </div>`;
-                document.querySelector('#container .row').innerHTML = html;
+                document.querySelector('#memberCard .row').innerHTML = html;
             } else {
                 docs.forEach((doc) => {
                     let row = doc.data();
@@ -120,7 +120,7 @@
                             </div>
                         </div>`;
 
-                    document.querySelector('#container .row').insertAdjacentHTML('beforeend', html);
+                    document.querySelector('#memberCard .row').insertAdjacentHTML('beforeend', html);
                 });
 
                 // 멤버 카드 클릭 시 해당 페이지로 이동
@@ -131,7 +131,35 @@
                     });
                 });
             }
+
+            // 멤버 로딩 끝나면 scroll
+            scrollToHashElement();
         })();
+
+        // scroll 함수
+        function scrollToHashElement() {
+            if (location.hash) {
+                const target = document.querySelector(location.hash);
+                if (target) {
+                    const headerOffset = 55;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            }
+        }
+        
+        // F5 누르면 새로 로딩
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'F5' || event.keyCode === 116) {
+                event.preventDefault();
+                window.location.href = 'main.html';
+            }
+        });
     </script>
 
     <script>
