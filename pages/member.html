@@ -21,6 +21,8 @@
 
 <body>
     <div id="header"></div>
+
+    <h2 class="title">MEMBER DETAIL</h2>
     <div class="main-container">
         <div class="left-section rounded-2 shadow-sm">
             <div class="profile-image">
@@ -104,17 +106,14 @@
 
     <script>
         $(function () {
-            // header 로드 후
             $("#header").load("common/header.html", function () {
-                // header 내부의 .menu 요소 분리(detach)
                 const menu = $("#header .menu").detach();
-                // header 아래에 .menu 추가
                 $("#header").after(menu);
-                // footer 로드 후 body 표시
                 $("#footer").load("common/footer.html", function () {
                     $("body").css("visibility", "visible");
                 });
             });
         });
     </script>
+
 </html>
