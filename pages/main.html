@@ -113,7 +113,9 @@
                                 <div class="card-body">
                                     <h5 class="card-title">${row['name']}</h5>
                                     <p class="card-text">${row['mbti']}</p>
-                                    <p class="text-muted">${row['blog'] ? `<a href="${row['blog']}" target="_blank">BLOG</a>` : 'BLOG 없음'}</p>
+                                    <p class="text-muted">${row['blog'] ? `
+                                        <a href="${row['blog']}" target="_blank" onclick="event.stopPropagation()">BLOG</a>` : 'BLOG 없음'}
+                                    </p>
                                     <p class="text-muted">${row['contact'] || '전화번호 없음'}</p>
                                     <p class="text-muted">${row['email'] || '이메일 없음'}</p>
                                 </div>

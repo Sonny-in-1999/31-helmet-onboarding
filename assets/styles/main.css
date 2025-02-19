@@ -9,3 +9,9 @@
 .member-card img {
     width: 100px;
 }
+.member-card {
+    cursor: pointer;
+}
+.member-card > .card:hover {
+    background-color: rgba(243, 244, 245, 1) !important;
+}

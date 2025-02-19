@@ -7,13 +7,6 @@
 }
 
 body {
-  background-color: #fdeef4;
-  background-image:
-      radial-gradient(white 8%, transparent 20%),
-      radial-gradient(white 8%, transparent 20%);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-  font-family: "Nanum Pen Script", serif;
   margin: 0;
   padding: 20px;
   display: flex;
