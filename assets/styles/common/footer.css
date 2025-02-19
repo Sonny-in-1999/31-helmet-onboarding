@@ -17,3 +17,6 @@ footer {
 .footer-menu a:hover {
     text-decoration: underline;
 }
+footer p {
+    margin-bottom: 0;
+}
