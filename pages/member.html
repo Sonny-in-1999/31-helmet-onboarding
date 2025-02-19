@@ -9,20 +9,98 @@
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="icon" href="../assets/images/favicon.svg">
+<<<<<<< HEAD
+    <!-- firebase 설정-->
+    
+=======
 
     <style>
         body {
             visibility: hidden;
         }
     </style>
+>>>>>>> d8296e0d00c570b6906e8ac6722e2ce9c782c33b
 </head>
 
 <body>
     <div id="header"></div>
-    <div class="main-content">
-        멤버 상세페이지
+    <div class="main-container">
+        <div class="left-section">
+            <div class="profile-image">
+              <img id="img" src="https://img.khan.co.kr/news/2024/03/23/news-p.v1.20240323.c159a4cab6f64473adf462d873e01e43_P1.jpg" alt="프로필 이미지">
+            </div>
+            <div class="contact">
+              <h2><strong id="name">이름</strong></h2>
+              <p><span>MBTI:</span> <span id="mbti">MBTI 값</span></p>
+              <p><span>📞</span> <span id="contact">연락처</span></p>
+              <p><span>✉</span> <span id="email">이메일</span></p>
+            </div>
+          </div>
+          <div class="right-section">
+            <h2>자기소개</h2>
+            <p id="introduce">자기소개 내용이 여기에 들어갑니다.</p>
+            <h2>나의 기술</h2>
+            <div class="skillList">
+              
+              <span>JavaScript</span>
+              <span>React</span>
+            </div>
+           
+            
+            
+            <h2>블로그</h2>
+            <a href="#" id="blog">블로그 링크</a>
+          </div>
     </div>
+
+    <script type="module">
+        import { app, db, collection, getDocs, query, orderBy } from '../assets/js/firebase-config.js';
+
+        async function loadMember() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberId = urlParams.get('id');
+            if (!memberId) {
+                alert('멤버 ID가 없습니다.');
+                return;
+            }
+            // 특정 memberId 문서 가져오기
+            //const q = doc(db, "member", memberId);
+            //const docs = await getDoc(q);
+
+            const q = query(collection(db, "member"));
+            const docs = await getDocs(q);
+    
+            if (docs.exists()) {
+                const data = docs.data();
+                $('#img').attr('src', data.img);
+                $('#name').text(data.name);
+                $('#mbti').text(data.mbti);
+                $('#contact').text(data.contact);
+                $('#email').text(data.email);
+                $('#introduce').html(data.introduce);
+                $('#blog').attr('href', data.blog);
+                
+                data.skillList.forEach(skill => {
+                    $('.skillList').append(`<span class='tag'>${skill}</span>`);
+                });
+            } else {
+                alert('멤버 정보를 찾을 수 없습니다.');
+            }
+        }
+    
+        loadMember();
+    </script>
+    
     <div id="footer"></div>
+<<<<<<< HEAD
+<script>
+    // common header 및 footer 적용
+    $(function() {
+        $("#header").load("common/header.html");
+        $("#footer").load("common/footer.html");
+    });
+</script>
+=======
 
     <!-- firebase 설정-->
     <script type="module">
@@ -38,5 +116,6 @@
             });
         });
     </script>
+>>>>>>> d8296e0d00c570b6906e8ac6722e2ce9c782c33b
 
 </html>
