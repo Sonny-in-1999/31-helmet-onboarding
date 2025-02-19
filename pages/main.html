@@ -21,21 +21,23 @@
     </style>
 </head>
 
-<body>
+<body id="intro">
     <div id="header"></div>
 
     <!-- 인트로 -->
-    <div id="intro" class="container d-flex justify-content-center mt-3">
+    <h2>Intro </h1>
+    <div class="container d-flex justify-content-center mt-3">
         <div class="main-content w-50">
             <div class="p-3 mb-2 text-center rounded-5 shadow-lg"
                 style="background-color: #FADADD; border-radius: 20px !important;">
                 <div class="container-fluid py-3">
                     <h1 class="display-5 fw-bold">WE ARE HELMET JO</h1>
                     <p class="col-md-8 mx-auto fs-5">
-                        Our team has chosen the slogan "We Charge Forward."
+                        Our team has chosen the slogan "We Charge Forward."<br>
                         No matter what challenges come our way, the five of us will tackle them head-on with our
-                        helmets.
-                        We are ready to take on any challenge. Thank you! 🚀💪💪💪💪💪
+                        helmets. <br>
+                        We are ready to take on any challenge. Thank you! <br> 
+                        🚀💪💪💪💪💪
                     </p>
                 </div>
             </div>
@@ -43,7 +45,8 @@
     </div>
 
     <!-- 소개 -->
-    <div id="helmet" class="container w-75 mt-4">
+    <h2 id="helmet">HELMET </h1>
+    <div class="container w-75 mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col align-self-stretch">
                 <h3 class="text-center">Our Team Rules</h3>
@@ -109,7 +112,8 @@
     </div>
 
     <!-- 멤버 카드 -->
-    <div class="container" id="memberCard">
+    <h2 id="memberCard">MEMBER CARD </h1>
+    <div class="container" id="memberCardList">
         <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center"></div>
     </div>
 
@@ -128,7 +132,7 @@
                     <div class="text-center p-5">
                         <p>등록된 멤버가 없습니다.</p>
                     </div>`;
-                document.querySelector('#memberCard .row').innerHTML = html;
+                document.querySelector('#memberCardList .row').innerHTML = html;
             } else {
                 docs.forEach((doc) => {
                     let row = doc.data();
@@ -149,7 +153,7 @@
                             </div>
                         </div>`;
 
-                    document.querySelector('#memberCard .row').insertAdjacentHTML('beforeend', html);
+                    document.querySelector('#memberCardList .row').insertAdjacentHTML('beforeend', html);
                 });
 
                 // 멤버 카드 클릭 시 해당 페이지로 이동
@@ -168,16 +172,18 @@
         function scrollToHashElement() {
             if (location.hash) {
                 const target = document.querySelector(location.hash);
+                
                 if (target) {
                     const headerOffset = 60;
                     const elementPosition = target.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
                     window.scrollTo({
-                        top: offsetPosition ,
+                        top: offsetPosition,
                         behavior: "smooth"
                     });
                 }
+                setActive()
             }
         }
 
@@ -187,6 +193,11 @@
                 event.preventDefault();
                 window.location.href = 'main.html';
             }
+        });
+
+        window.addEventListener('hashchange', (e) => {
+            e.preventDefault
+            scrollToHashElement()
         });
     </script>
 
@@ -206,4 +217,5 @@
         });
     </script>
 </body>
+
 </html>

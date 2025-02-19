@@ -27,7 +27,7 @@ header {
 .menu {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
     background-color: #333;
     padding: 10px 0;
     position: sticky;
@@ -43,5 +43,9 @@ header {
 }
 
 .menu a:hover {
+    color: #ffcc00;
+}
+
+.menu > a.active {
     color: #ffcc00;
 }

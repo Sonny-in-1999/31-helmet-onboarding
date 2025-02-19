@@ -18,12 +18,29 @@
             <img src="../../assets/images/black_resized.png" alt="Member 5">
         </div>
         <nav class="menu">
-            <a href="/pages/main.html">INTRO</a>
+            <a href="/pages/main.html#intro">INTRO</a>
             <a href="/pages/main.html#helmet">HELMET</a>
             <a href="/pages/main.html#memberCard">MEMBER CARD</a>
-            <a href="/pages/guestBook.html">방명록</a>
+            <a href="/pages/guestBook.html#guestBook">방명록</a>
         </nav>
     </header>
+
+    <script>
+        function setActive() {
+            const hash = location.hash; // 예: "#helmet"
+            if (hash) {
+                const id = hash.substring(1); // "helmet"
+                const navLinks = document.querySelectorAll('.menu a');
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    link.classList.remove('active');
+                    if (href && href.includes(hash)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>

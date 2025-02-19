@@ -2,8 +2,12 @@
     line-height: 2;
 }
 
-#memberCard {
-    margin-top: 80px;
+#helmet{
+    margin-top: 170px;
+}
+
+ #memberCard {
+    margin-top: 205px;
 }
 
 .member-card img {
@@ -18,4 +22,11 @@
 
 .member-card>.card:hover {
     background-color: rgba(243, 244, 245, 1) !important;
+}
+
+body h2 {
+    margin-top: 65px;
+    font-size: 75px;
+    font-weight: bold;
+    text-align: center;
 }
