@@ -1,18 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@100..900&display=swap');
 
-* {
-    font-family: "Gowun Dodum", serif;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 .main-content {
     width: 50%;
     margin: auto;
+    margin-bottom: 100px;
 }
 
 .guestbook-title {
@@ -37,6 +28,7 @@ body {
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .guestbook-item {
@@ -78,16 +70,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: left;
-    border: 1px solid black;
+    border: 1px solid #ddd;
     padding: 20px;
+    background-color: #fff;
+    gap: 10px;
 }
 
 .guestbook-form input,
 .guestbook-form textarea {
     width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
+    border: none;
+    font-size: 16px;
 }
 
 .guestbook-form button {
@@ -98,15 +91,57 @@ body {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    margin-left : auto;
-    
+    margin-left: auto;
+
 }
 
 .guestbook-form button:hover {
-   background-color: grey;
+    background-color: #d8d4d4;
 }
 
 #nickname {
     width: 50%
 }
 
+.guestbook-content p {
+    margin-bottom: 0;
+}
+
+.profile-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-box label {
+    cursor: pointer;
+    padding: 8px 16px;
+    background-color: #ec98bf;
+    color: white;
+    border-radius: 4px;
+}
+
+.profile-box label:hover {
+    background-color: #eb8bb7;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #d4e2ff;
+    background-color: #f5f9ff;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 16px;
+    position: relative;
+    cursor: default;
+}
+.chip i {
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #666;
+}
+.chip i:hover {
+    color: #333;
+  }

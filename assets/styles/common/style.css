@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Pen+Script&display=swap');
+
+body {
+    background-color: #fdeef4;
+    background-image:
+        radial-gradient(white 8%, transparent 20%),
+        radial-gradient(white 8%, transparent 20%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    font-family: "Nanum Pen Script", serif;
+}

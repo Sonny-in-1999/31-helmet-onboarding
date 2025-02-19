@@ -1,0 +1,11 @@
+.card-text {
+    line-height: 2;
+}
+
+#container {
+    margin-top: 80px;
+}
+
+.member-card img {
+    width: 100px;
+}

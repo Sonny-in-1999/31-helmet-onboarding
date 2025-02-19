@@ -13,29 +13,6 @@
     <!-- jQuery CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="icon" href="../assets/images/favicon.svg">
-
-    <!-- Custom Styles -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Pen+Script&display=swap');
-
-        body {
-            background-color: #fdeef4;
-            background-image:
-                radial-gradient(white 8%, transparent 20%),
-                radial-gradient(white 8%, transparent 20%);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            font-family: "Nanum Pen Script", serif;
-        }
-
-        .card-text {
-            line-height: 2;
-        }
-
-        #container {
-            margin-top: 80px;
-        }
-    </style>
 </head>
 
 <body>
@@ -109,25 +86,6 @@
         <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center"></div>
     </div>
 
-    <!-- 맴버카드 -->
-    <div class="container" id="container">
-        <div class="row row-cols-1 row-cols-md-5 g-4 justify-content-center">
-            <div class="col">
-                <div class="card h-100 text-center shadow-lg p-3 bg-light rounded-4">
-                    <img src="../assets/images/green_resized.png" class="rounded-circle mx-auto mt-3" alt="Member 1"
-                        style="width: 100px;">
-                    <div class="card-body">
-                        <h5 class="card-title">박민혁</h5>
-                        <p class="card-text">ISFJ</p>
-                        <p class="text-muted"><a href="https://velog.io/@pospara9356/posts" target="_blank">BLOG</a></p>
-                        <p class="text-muted">010-4646-9356</p>
-                        <p class="text-muted">pospara2@gmail.com</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="footer"></div>
 
     <!-- JavaScript 코드는 BODY 맨 아래에 배치 -->
@@ -149,9 +107,9 @@
                     let row = doc.data();
 
                     const html = `
-                        <div class="col" id="memberCard"data-id=${doc.id}>
+                        <div class="col member-card" data-id=${doc.id}>
                             <div class="card h-100 text-center shadow-lg p-3 bg-light rounded-4">
-                                <img src="${row['img']}" class="rounded-circle mx-auto mt-3" alt="${row['name']}" style="width: 100px;">
+                                <img src="${row['img']}" class="rounded-circle mx-auto mt-3" alt="${row['name']}">
                                 <div class="card-body">
                                     <h5 class="card-title">${row['name']}</h5>
                                     <p class="card-text">${row['mbti']}</p>
@@ -166,7 +124,7 @@
                 });
 
                 // 멤버 카드 클릭 시 해당 페이지로 이동
-                document.querySelectorAll('#memberCard').forEach(card => {
+                document.querySelectorAll('.member-card').forEach(card => {
                     card.addEventListener('click', function () {
                         const memberId = this.dataset.id;
                         location.href = `/pages/memberCard.html?id=${memberId}`;
