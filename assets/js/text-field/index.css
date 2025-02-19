@@ -52,6 +52,8 @@
   align-items: center;
   gap: 8px;
   height: calc(var(--input-height) - 4px);
+  padding-left: 8px; 
+  padding-right: 12px;
 }
 
 .text-field .text-field__action i {
