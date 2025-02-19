@@ -8,10 +8,14 @@
 
 .member-card img {
     width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
+
 .member-card {
     cursor: pointer;
 }
-.member-card > .card:hover {
+
+.member-card>.card:hover {
     background-color: rgba(243, 244, 245, 1) !important;
 }

@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate());
 
         let profileImageUrl = DEFAULT_PROFILE_IMAGE; // 기본 이미지
-
+        $('.loading-container').show();
         if (file) {
             const storageRef = ref(storage, `profileImages/${file.name}`);
             await uploadBytes(storageRef, file);
@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             alert("방명록 작성 실패.");
         }
+        $('.loading-container').hide();
     }
 
     // 방명록 목록 불러오기

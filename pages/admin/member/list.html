@@ -4,31 +4,41 @@
 <head>
   <meta charset="UTF-8">
   <title>멤버 관리 리스트</title>
-  <link href="../../../assets/styles/admin/admin.css" type="text/css" rel="stylesheet">
-  <link href="../../../assets/styles/admin/reset.css" type="text/css" rel="stylesheet">
-  <link href="../../../assets/styles/common/style.css" type="text/css" rel="stylesheet">
-  
+
   <!--제이쿼리 CDN-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <link rel="icon" href="../../../assets/images/favicon.svg">
+  <link rel="icon" href="/assets/images/favicon.svg">
 
+  <style>
+    body {
+        visibility: hidden;
+    }
+</style>
 <body>
-  <div class="container">
-    <h1>멤버 관리 리스트</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>사진</th>
-          <th>이름</th>
-          <th>등록일</th>
-        </tr>
-      </thead>
-      <tbody id="member-list">
-      </tbody>
-    </table>
-    <div class="button-container">
-      <a href="create.html" class="register-button">등록하기</a>
+  <div id="header">
+  </div>
+
+  <section>
+    <div class="container">
+      <h1>멤버 관리 리스트</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>사진</th>
+            <th>이름</th>
+            <th>등록일</th>
+          </tr>
+        </thead>
+        <tbody id="member-list">
+        </tbody>
+      </table>
+      <div class="button-container">
+        <a href="create.html" class="register-button">등록하기</a>
+      </div>
     </div>
+  </section>
+
+  <div id="footer">
   </div>
 
   <script type="module">
@@ -69,6 +79,16 @@
     })()
 
   </script>
-</body>
 
+<script>
+  // common header 및 footer 적용
+  $(function () {
+      $("#header").load("/pages/admin/common/header.html", function () {
+          $("#footer").load("/pages/common/footer.html", function () {
+              $("body").css("visibility", "visible");
+          });
+      });
+  });
+</script>
+</body>
 </html>

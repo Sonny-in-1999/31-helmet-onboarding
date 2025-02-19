@@ -33,3 +33,32 @@ body::-webkit-scrollbar {
     scrollbar-color: #f7a1bf #fdeef4;
   }
   
+
+  /* 로딩 스피너 start */
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;        
+  height: 100vh;       
+  display: flex;        
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+.loading-spinner {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  border-top-color: #004cac;
+  animation: spin 0.8s infinite ease-in-out;
+}
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+/* 로딩 스피너 end */
