@@ -9,17 +9,11 @@
     <!--제이쿼리 CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="icon" href="../assets/images/favicon.svg">
-<<<<<<< HEAD
-    <!-- firebase 설정-->
-    
-=======
-
     <style>
         body {
             visibility: hidden;
         }
     </style>
->>>>>>> d8296e0d00c570b6906e8ac6722e2ce9c782c33b
 </head>
 
 <body>
@@ -53,6 +47,7 @@
           </div>
     </div>
 
+    <div id="footer"></div>
     <script type="module">
         import { app, db, collection, getDocs, query, orderBy } from '../assets/js/firebase-config.js';
 
@@ -90,22 +85,7 @@
     
         loadMember();
     </script>
-    
-    <div id="footer"></div>
-<<<<<<< HEAD
-<script>
-    // common header 및 footer 적용
-    $(function() {
-        $("#header").load("common/header.html");
-        $("#footer").load("common/footer.html");
-    });
-</script>
-=======
 
-    <!-- firebase 설정-->
-    <script type="module">
-        import { app, db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from '../assets/js/firebase-config.js';
-    </script>
     <script>
         // common header 및 footer 적용
         $(function () {
@@ -116,6 +96,4 @@
             });
         });
     </script>
->>>>>>> d8296e0d00c570b6906e8ac6722e2ce9c782c33b
-
 </html>
