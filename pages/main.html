@@ -21,10 +21,11 @@
     </style>
 </head>
 
-<body id="intro">
+<body>
+    <div id="intro"></div>
     <div id="header"></div>
     <!-- 인트로 -->
-    <div id="intro-div">
+    <div>
         <h2>INTRO</h2>
         <div class="container d-flex justify-content-center mt-3">
             <div class="main-content w-50">
@@ -224,7 +225,7 @@
 
     <script>
         // 감시할 섹션들을 선택 (각 섹션에 고유한 id가 있어야 함)
-        const sections = document.querySelectorAll('#intro-div, #helmet, #memberCard');
+        const sections = document.querySelectorAll('#intro, #helmet, #memberCard');
 
         // Intersection Observer 옵션 (50% 이상 보이면 active로 처리)
         const options = {
@@ -242,7 +243,7 @@
                     document.querySelectorAll('.menu a').forEach(link => {
                         link.classList.remove('active');
                         // href에 해당 id가 포함되면 active 추가
-                        if (link.getAttribute('href').includes('#' + id.replace('-div', ''))) {
+                        if (link.getAttribute('href').includes('#' + id)) {
                             link.classList.add('active');
                         }
                     });
