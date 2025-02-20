@@ -17,16 +17,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.querySelectorAll('text-field, dropdown-select').forEach(el => el.validate());
 
         let profileImageUrl = DEFAULT_PROFILE_IMAGE; // 기본 이미지
+
+        if (!nickname || !message) {
+            alert("닉네임과 방명록 내용을 입력해주세요.");
+            return;
+        }
+
         $('.loading-container').show();
         if (file) {
             const storageRef = ref(storage, `profileImages/${file.name}`);
             await uploadBytes(storageRef, file);
             profileImageUrl = await getDownloadURL(storageRef);
-        }
-
-        if (!nickname || !message) {
-            alert("닉네임과 방명록 내용을 입력해주세요.");
-            return;
         }
 
         try {
