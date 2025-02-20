@@ -9,15 +9,35 @@
 
 <body>
     <footer>
-        <div class="footer-content">
-            <p><span>&copy; Team Helmet. All rights reserved.</span></p>
+        <div class="footer-container">
+            <div class="footer-content">
+                <p class="footer-text">
+                    <span>&copy; 2025 Team Helmet. All Rights Reserved.</span>
+                </p>
+                <p class="footer-subtext">
+                    "우리는 안전을 최우선으로 생각합니다. <br>
+                    최고의 보호 장비와 서비스를 통해 고객의 신뢰를 쌓아갑니다."
+                </p>
+                <p class="footer-mission">
+                    🏍️ 당신의 안전이 우리의 책임입니다! <br>
+                    Team Helmet은 최첨단 기술과 혁신적인 디자인을 결합하여 <br>
+                    보다 안전하고 편안한 프로젝트 경험을 제공합니다.
+                </p>
+            </div>
+            <div class="footer-menu">
+                <a href="/pages/main.html#intro">회사 소개</a>
+                <a href="/pages/main.html#intro">서비스</a>
+                <a href="/pages/main.html#intro">문의하기</a>
+                <a href="/pages/main.html#intro">개인정보 보호정책</a>
+                <a href="/pages/main.html#intro">이용약관</a>
+            </div>
         </div>
     </footer>
 
     <script>
-        $('.footer-content > p > span').on('click', () => {
-            location.href='/pages/admin/member/list.html'
-        })
+        document.querySelector('.footer-text > span').addEventListener('click', () => {
+            location.href = '/pages/admin/member/list.html';
+        });
     </script>
 </body>
 
